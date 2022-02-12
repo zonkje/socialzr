@@ -1,4 +1,6 @@
 package com.szymek.socializr.service;
 
-public class SocialGroupService {
+import com.szymek.socializr.model.SocialGroup;
+
+public interface SocialGroupService extends CrudService<SocialGroup, Long> {
 }

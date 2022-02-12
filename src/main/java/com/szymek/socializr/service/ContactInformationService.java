@@ -1,7 +1,6 @@
 package com.szymek.socializr.service;
 
-import org.springframework.stereotype.Service;
+import com.szymek.socializr.model.ContactInformation;
 
-@Service
-public class ContactInformationService {
+public interface ContactInformationService extends CrudService<ContactInformation, Long> {
 }

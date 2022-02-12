@@ -4,13 +4,7 @@ import com.szymek.socializr.model.Post;
 
 import java.util.Collection;
 
-public interface PostService {
-
-    Post findById(Long id);
-
-    Post save(Post post);
-
-    Collection<Post> findAll();
+public interface PostService extends CrudService<Post, Long>{
 
     Collection<Post> findAllByAuthor();
 

@@ -9,12 +9,7 @@ import java.util.Collection;
 public class PostServiceImpl implements PostService{
 
     @Override
-    public Post findById(Long id) {
-        return null;
-    }
-
-    @Override
-    public Post save(Post post) {
+    public Collection<Post> findAllByAuthor() {
         return null;
     }
 
@@ -24,8 +19,22 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Collection<Post> findAllByAuthor() {
+    public Post findById(Long aLong) {
         return null;
     }
 
+    @Override
+    public Post create(Post object) {
+        return null;
+    }
+
+    @Override
+    public void delete(Post object) {
+
+    }
+
+    @Override
+    public void deleteById(Long aLong) {
+
+    }
 }

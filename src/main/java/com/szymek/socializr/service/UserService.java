@@ -1,7 +1,6 @@
 package com.szymek.socializr.service;
 
-import org.springframework.stereotype.Service;
+import com.szymek.socializr.model.User;
 
-@Service
-public class UserService {
+public interface UserService extends CrudService<User, Long>{
 }

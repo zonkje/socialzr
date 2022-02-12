@@ -1,4 +1,6 @@
 package com.szymek.socializr.service;
 
-public class CommentService {
+import com.szymek.socializr.model.Comment;
+
+public interface CommentService extends CrudService<Comment, Long>{
 }
