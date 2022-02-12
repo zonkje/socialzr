@@ -1,7 +1,7 @@
 package com.szymek.socializr.bootstrap;
 
 import com.szymek.socializr.model.*;
-import com.szymek.socializr.repositories.*;
+import com.szymek.socializr.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
