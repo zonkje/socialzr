@@ -1,7 +1,7 @@
 package com.szymek.socializr.controller;
 
 import com.szymek.socializr.model.User;
-import com.szymek.socializr.repository.UserRepository;
+import com.szymek.socializr.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -10,25 +10,25 @@ import java.util.Collection;
 @RequestMapping(path = "/user")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable("userId") Long userId){
-        return userRepository.findById(userId).get();
+        return userService.findById(userId);
     }
 
     @GetMapping
     public Collection<User> getAllUsers(){
-        return (Collection<User>) userRepository.findAll();
+        return userService.findAll();
     }
 
     @PostMapping
     public User createUser(@RequestBody User user){
-        return userRepository.save(user);
+        return userService.create(user);
     }
 
 }
