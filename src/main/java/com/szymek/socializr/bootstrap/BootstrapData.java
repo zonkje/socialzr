@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 @Component
@@ -27,12 +28,14 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        User u1 = new User("Szymek", "Ptyskowski", null, null, null);
-        Address a1 = new Address("Espl. des Particules 1, 1211", "Meyrin", "Geneva", "Switzerland");
-        ContactInformation ci1 = new ContactInformation("szymek@gmail.com", "797 124 801", a1);
-        Post p1 = new Post("Very first post in this page", u1, null);
-        Comment c1 = new Comment("first comment", u1, p1);
-        SocialGroup sg1 = new SocialGroup("Pioneers", "First group ever created for this service", u1, null, AccessLevel.PUBLIC);
+        User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
+        Address a1 = Address.builder().address("Espl. des Particules 1, 1211").city("Geneva").state("Meyrin").country("Switzerland").build();
+        ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797 124 801").address(a1).build();
+        Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).build();
+        Comment c1 = Comment.builder().text("first comment").author(u1).post(p1).build();
+        SocialGroup sg1 = SocialGroup.builder().name("Pioneers").description("First group ever created for this service").creator(u1).members(null)
+                .accessLevel(AccessLevel.PUBLIC).build();
+
         u1.setPosts(new HashSet<>());
         u1.getPosts().add(p1);
         u1.setContactInformation(ci1);

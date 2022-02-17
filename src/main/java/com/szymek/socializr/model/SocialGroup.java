@@ -1,11 +1,18 @@
 package com.szymek.socializr.model;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.Collection;
 
+@Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"members", "creator"})
 @Table(name = "social_group")
-public class SocialGroup extends BaseEntity{
+public class SocialGroup extends BaseEntity {
 
     @Column(name = "name")
     private String name;
@@ -27,56 +34,5 @@ public class SocialGroup extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     @Column(name = "access_level")
     private AccessLevel accessLevel;
-
-    public SocialGroup() {
-    }
-
-    public SocialGroup(String name, String description, User creator, Collection<User> members, AccessLevel accessLevel) {
-        this.name = name;
-        this.description = description;
-        this.creator = creator;
-        this.members = members;
-        this.accessLevel = accessLevel;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public Collection<User> getMembers() {
-        return members;
-    }
-
-    public void setMembers(Collection<User> members) {
-        this.members = members;
-    }
-
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
-
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-    }
 
 }
