@@ -14,10 +14,13 @@ import java.util.Collection;
         property = "id")
 public class Post {
 
+    //TODO: -add BaseEntity class
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     private String text;
 
     @ManyToOne
@@ -25,7 +28,10 @@ public class Post {
     private User author;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "post")
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL
+    )
     private Collection<Comment> comments;
 
     public Post() {

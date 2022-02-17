@@ -32,7 +32,7 @@ public class BootstrapData implements CommandLineRunner {
         ContactInformation ci1 = new ContactInformation("szymek@gmail.com", "797 124 801", a1);
         Post p1 = new Post("Very first post in this page", u1, null);
         Comment c1 = new Comment("first comment", u1, p1);
-        SocialGroup sg1 = new SocialGroup("Pioneers", "First group ever created for this service", u1, null);
+        SocialGroup sg1 = new SocialGroup("Pioneers", "First group ever created for this service", u1, null, AccessLevel.PUBLIC);
         u1.setPosts(new HashSet<>());
         u1.getPosts().add(p1);
         u1.setContactInformation(ci1);
@@ -43,8 +43,8 @@ public class BootstrapData implements CommandLineRunner {
         sg1.setMembers(new HashSet<>());
         sg1.getMembers().add(u1);
 
-        contactInformationRepository.save(ci1);
         userRepository.save(u1);
+        contactInformationRepository.save(ci1);
         postRepository.save(p1);
         commentRepository.save(c1);
         socialGroupRepository.save(sg1);

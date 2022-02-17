@@ -1,12 +1,13 @@
 package com.szymek.socializr.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class ContactInformation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String email;
@@ -71,14 +72,12 @@ public class ContactInformation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         ContactInformation that = (ContactInformation) o;
-
-        return id != null ? id.equals(that.id) : that.id == null;
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(address, that.address);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(id, email, phoneNumber, address);
     }
 }

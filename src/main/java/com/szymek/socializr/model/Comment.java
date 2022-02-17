@@ -1,12 +1,14 @@
 package com.szymek.socializr.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String text;
@@ -14,7 +16,7 @@ public class Comment {
     @OneToOne
     private User author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Post post;
 
     public Comment() {

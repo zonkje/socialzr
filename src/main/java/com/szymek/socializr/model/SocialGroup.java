@@ -2,6 +2,7 @@ package com.szymek.socializr.model;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 public class SocialGroup {
@@ -25,14 +26,18 @@ public class SocialGroup {
     )
     private Collection<User> members;
 
+    @Enumerated(value = EnumType.STRING)
+    private AccessLevel accessLevel;
+
     public SocialGroup() {
     }
 
-    public SocialGroup(String name, String description, User creator, Collection<User> members) {
+    public SocialGroup(String name, String description, User creator, Collection<User> members, AccessLevel accessLevel) {
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.members = members;
+        this.accessLevel = accessLevel;
     }
 
     public Long getId() {
@@ -75,6 +80,14 @@ public class SocialGroup {
         this.members = members;
     }
 
+    public AccessLevel getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(AccessLevel accessLevel) {
+        this.accessLevel = accessLevel;
+    }
+
     @Override
     public String toString() {
         return "SocialGroup{" +
@@ -83,6 +96,7 @@ public class SocialGroup {
                 ", description='" + description + '\'' +
                 ", creator=" + creator +
                 ", members=" + members +
+                ", accessLevel=" + accessLevel +
                 '}';
     }
 
@@ -90,14 +104,12 @@ public class SocialGroup {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        SocialGroup group = (SocialGroup) o;
-
-        return id != null ? id.equals(group.id) : group.id == null;
+        SocialGroup that = (SocialGroup) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(creator, that.creator) && Objects.equals(members, that.members) && accessLevel == that.accessLevel;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(id, name, description, creator, members, accessLevel);
     }
 }

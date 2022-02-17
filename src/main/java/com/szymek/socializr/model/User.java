@@ -14,18 +14,20 @@ import java.util.Collection;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
 
     private String lastName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private ContactInformation contactInformation;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "author")
+    @OneToMany(
+            mappedBy = "author",
+            cascade = CascadeType.ALL)
     private Collection<Post> posts;
 
     @ManyToMany(mappedBy = "members")
