@@ -1,17 +1,17 @@
 package com.szymek.socializr.model;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
-public class ContactInformation {
+@Table(name = "contact_information")
+public class ContactInformation extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @Embedded
@@ -24,14 +24,6 @@ public class ContactInformation {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -58,26 +50,4 @@ public class ContactInformation {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "ContactInformation{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", address=" + address +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ContactInformation that = (ContactInformation) o;
-        return Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(address, that.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, phoneNumber, address);
-    }
 }

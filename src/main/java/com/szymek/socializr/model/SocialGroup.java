@@ -2,17 +2,15 @@ package com.szymek.socializr.model;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Objects;
 
 @Entity
-public class SocialGroup {
+@Table(name = "social_group")
+public class SocialGroup extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
     @OneToOne
@@ -20,13 +18,14 @@ public class SocialGroup {
 
     @ManyToMany
     @JoinTable(
-            name = "user_socialGroup",
-            joinColumns = @JoinColumn(name = "socialGroup_id"),
+            name = "user_social_group",
+            joinColumns = @JoinColumn(name = "social_group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Collection<User> members;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(name = "access_level")
     private AccessLevel accessLevel;
 
     public SocialGroup() {
@@ -38,14 +37,6 @@ public class SocialGroup {
         this.creator = creator;
         this.members = members;
         this.accessLevel = accessLevel;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -88,28 +79,4 @@ public class SocialGroup {
         this.accessLevel = accessLevel;
     }
 
-    @Override
-    public String toString() {
-        return "SocialGroup{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", creator=" + creator +
-                ", members=" + members +
-                ", accessLevel=" + accessLevel +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SocialGroup that = (SocialGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(creator, that.creator) && Objects.equals(members, that.members) && accessLevel == that.accessLevel;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, creator, members, accessLevel);
-    }
 }

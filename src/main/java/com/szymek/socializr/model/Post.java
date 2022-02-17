@@ -3,7 +3,6 @@ package com.szymek.socializr.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -12,15 +11,11 @@ import java.util.Collection;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Post {
-
-    //TODO: -add BaseEntity class
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "post")
+public class Post extends BaseEntity{
 
     @Lob
+    @Column(name = "text")
     private String text;
 
     @ManyToOne
@@ -41,14 +36,6 @@ public class Post {
         this.text = text;
         this.author = author;
         this.comments = comments;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getText() {
@@ -75,28 +62,4 @@ public class Post {
         this.comments = comments;
     }
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", author=" + author +
-                ", comments=" + comments +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Post post = (Post) o;
-
-        return id != null ? id.equals(post.id) : post.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

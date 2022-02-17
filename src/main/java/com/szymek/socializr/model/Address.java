@@ -1,16 +1,21 @@
 package com.szymek.socializr.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Address {
 
+    @Column(name = "address")
     private String address;
 
+    @Column(name = "city")
     private String city;
 
+    @Column(name = "state")
     private String state;
 
+    @Column(name = "country")
     private String country;
 
     public Address() {
@@ -55,35 +60,4 @@ public class Address {
         this.country = country;
     }
 
-    @Override
-    public String toString() {
-        return "Address{" +
-                "address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", country='" + country + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Address address1 = (Address) o;
-
-        if (address != null ? !address.equals(address1.address) : address1.address != null) return false;
-        if (city != null ? !city.equals(address1.city) : address1.city != null) return false;
-        if (state != null ? !state.equals(address1.state) : address1.state != null) return false;
-        return country != null ? country.equals(address1.country) : address1.country == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = address != null ? address.hashCode() : 0;
-        result = 31 * result + (city != null ? city.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (country != null ? country.hashCode() : 0);
-        return result;
-    }
 }

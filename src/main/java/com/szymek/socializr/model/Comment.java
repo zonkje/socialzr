@@ -1,16 +1,12 @@
 package com.szymek.socializr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 
 @Entity
-public class Comment {
+@Table(name = "comment")
+public class Comment extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(name = "text")
     private String text;
 
     @OneToOne
@@ -26,14 +22,6 @@ public class Comment {
         this.text = text;
         this.author = author;
         this.post = post;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getText() {
@@ -60,28 +48,4 @@ public class Comment {
         this.post = post;
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", author=" + author +
-                ", post=" + post +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Comment comment = (Comment) o;
-
-        return id != null ? id.equals(comment.id) : comment.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }
