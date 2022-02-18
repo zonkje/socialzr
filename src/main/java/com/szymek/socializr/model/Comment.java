@@ -1,15 +1,17 @@
 package com.szymek.socializr.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"post", "author"})
+@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(exclude = {"post", "author"})
 @Table(name = "comment")
 public class Comment extends BaseEntity{
 

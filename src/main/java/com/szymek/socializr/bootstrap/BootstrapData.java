@@ -5,7 +5,6 @@ import com.szymek.socializr.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 @Component
@@ -27,6 +26,7 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+/*
 
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
         Address a1 = Address.builder().address("Espl. des Particules 1, 1211").city("Geneva").state("Meyrin").country("Switzerland").build();
@@ -51,6 +51,7 @@ public class BootstrapData implements CommandLineRunner {
         postRepository.save(p1);
         commentRepository.save(c1);
         socialGroupRepository.save(sg1);
+*/
 
     }
 }

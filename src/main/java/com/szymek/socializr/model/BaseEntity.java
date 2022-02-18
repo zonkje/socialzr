@@ -1,6 +1,7 @@
 package com.szymek.socializr.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,11 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+@EqualsAndHashCode
+public abstract class BaseEntity implements Serializable {
 
     //TODO: -add create date -add last modification date
 

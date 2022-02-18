@@ -1,16 +1,18 @@
 package com.szymek.socializr.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Data
 @Entity
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"members", "creator"})
+@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(exclude = {"members", "creator"})
 @Table(name = "social_group")
 public class SocialGroup extends BaseEntity {
 
