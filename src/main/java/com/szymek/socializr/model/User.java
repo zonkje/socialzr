@@ -14,9 +14,9 @@ import java.util.Collection;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 @Table(name = "user")
 public class User extends BaseEntity{
 
@@ -29,7 +29,7 @@ public class User extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL)
     private ContactInformation contactInformation;
 
-    @JsonManagedReference
+//    @JsonManagedReference
     @OneToMany(
             mappedBy = "author",
             cascade = CascadeType.ALL)

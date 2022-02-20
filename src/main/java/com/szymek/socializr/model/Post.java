@@ -16,9 +16,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 //@EqualsAndHashCode(exclude = {"author"})
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 @Table(name = "post")
 public class Post extends BaseEntity{
 
@@ -30,7 +30,7 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "post_author_id")
     private User author;
 
-    @JsonBackReference
+//    @JsonBackReference
     @OneToMany(
             mappedBy = "post",
             cascade = CascadeType.ALL
