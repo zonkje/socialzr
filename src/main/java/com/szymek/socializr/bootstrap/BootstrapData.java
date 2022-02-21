@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 @Component
@@ -26,7 +27,6 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-/*
 
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
         Address a1 = Address.builder().address("Espl. des Particules 1, 1211").city("Geneva").state("Meyrin").country("Switzerland").build();
@@ -36,14 +36,14 @@ public class BootstrapData implements CommandLineRunner {
         SocialGroup sg1 = SocialGroup.builder().name("Pioneers").description("First group ever created for this service").creator(u1).members(null)
                 .accessLevel(AccessLevel.PUBLIC).build();
 
-        u1.setPosts(new HashSet<>());
+        u1.setPosts(new ArrayList<>());
         u1.getPosts().add(p1);
         u1.setContactInformation(ci1);
-        p1.setComments(new HashSet<>());
+        p1.setComments(new ArrayList<>());
         p1.getComments().add(c1);
-        u1.setSocialGroups(new HashSet<>());
+        u1.setSocialGroups(new ArrayList<>());
         u1.getSocialGroups().add(sg1);
-        sg1.setMembers(new HashSet<>());
+        sg1.setMembers(new ArrayList<>());
         sg1.getMembers().add(u1);
 
         userRepository.save(u1);
@@ -51,7 +51,6 @@ public class BootstrapData implements CommandLineRunner {
         postRepository.save(p1);
         commentRepository.save(c1);
         socialGroupRepository.save(sg1);
-*/
 
     }
 }
