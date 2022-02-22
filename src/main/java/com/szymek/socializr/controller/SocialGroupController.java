@@ -1,9 +1,12 @@
 package com.szymek.socializr.controller;
 
+import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.repository.SocialGroupRepository;
 import com.szymek.socializr.service.SocialGroupService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 
@@ -18,18 +21,28 @@ public class SocialGroupController {
     }
 
     @GetMapping("/{socialGroupId}")
-    public SocialGroup getSocialGroup(@PathVariable("socialGroupId") Long socialGroupId){
-        return socialGroupService.findById(socialGroupId);
+    public ResponseEntity<?> getSocialGroup(@PathVariable("socialGroupId") Long socialGroupId){
+        return socialGroupService
+                .findById(socialGroupId)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
     }
 
     @GetMapping
-    public Collection<SocialGroup> getAllSocialGroups(){
-        return socialGroupService.findAll();
+    public ResponseEntity<?> getAllSocialGroups(){
+        return ResponseEntity.ok(socialGroupService.findAll());
     }
 
     @PostMapping
-    public SocialGroup createSocialGroup(@RequestBody SocialGroup socialGroup){
-        return socialGroupService.create(socialGroup);
+    public ResponseEntity<?> createSocialGroup(@RequestBody SocialGroup socialGroup){
+        return ResponseEntity
+                .created(UriComponentsBuilder
+                        .fromHttpUrl("http://localhost:8080/socialGroup/" +
+                                socialGroupService.create(socialGroup).getId())
+                        .build()
+                        .toUri()
+                )
+                .body(socialGroup);
     }
 
 }

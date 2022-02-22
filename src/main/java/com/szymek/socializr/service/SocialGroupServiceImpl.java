@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.SocialGroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class SocialGroupServiceImpl implements SocialGroupService{
@@ -21,8 +22,8 @@ public class SocialGroupServiceImpl implements SocialGroupService{
     }
 
     @Override
-    public SocialGroup findById(Long socialGroupId) {
-        return socialGroupRepository.findById(socialGroupId).get();
+    public Optional<SocialGroup> findById(Long socialGroupId) {
+        return socialGroupRepository.findById(socialGroupId);
     }
 
     @Override

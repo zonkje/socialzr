@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -21,8 +22,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findById(Long commentId) {
-        return commentRepository.findById(commentId).get();
+    public Optional<Comment> findById(Long commentId) {
+        return commentRepository.findById(commentId);
     }
 
     @Override

@@ -66,7 +66,7 @@ class PostServiceImplTest {
     void findById() {
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(returnPost));
 
-        Post post = postService.findById(1L);
+        Post post = postService.findById(1L).get();
 
         assertNotNull(post);
     }

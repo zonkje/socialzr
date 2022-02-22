@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService{
@@ -26,8 +27,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post findById(Long postId) {
-        return postRepository.findById(postId).get();
+    public Optional<Post> findById(Long postId) {
+        return postRepository.findById(postId);
     }
 
     @Override

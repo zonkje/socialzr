@@ -2,7 +2,10 @@ package com.szymek.socializr.controller;
 
 import com.szymek.socializr.model.User;
 import com.szymek.socializr.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 
@@ -17,18 +20,28 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable("userId") Long userId){
-        return userService.findById(userId);
+    public ResponseEntity<User> getUser(@PathVariable("userId") Long userId) {
+        return new ResponseEntity(userService.findById(userId), HttpStatus.OK);
     }
 
     @GetMapping
-    public Collection<User> getAllUsers(){
-        return userService.findAll();
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        return userService.create(user);
+    public ResponseEntity createUser(@RequestBody User user) {
+        User savedUser = userService.create(user);
+
+        return ResponseEntity
+                .created(
+                        UriComponentsBuilder
+                                .fromHttpUrl("http://localhost:8080/user/" + savedUser.getId().toString()
+                                )
+                                .build()
+                                .toUri()
+                )
+                .build();
     }
 
 }

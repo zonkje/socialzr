@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.ContactInformationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class ContactInformationServiceImpl implements ContactInformationService{
@@ -21,8 +22,8 @@ public class ContactInformationServiceImpl implements ContactInformationService{
     }
 
     @Override
-    public ContactInformation findById(Long contactInformationId) {
-        return contactInformationRepository.findById(contactInformationId).get();
+    public Optional<ContactInformation> findById(Long contactInformationId) {
+        return contactInformationRepository.findById(contactInformationId);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.szymek.socializr.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -21,8 +22,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findById(Long userId) {
-        return userRepository.findById(userId).get();
+    public Optional<User> findById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     @Override
