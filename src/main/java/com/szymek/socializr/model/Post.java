@@ -1,8 +1,5 @@
 package com.szymek.socializr.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -14,6 +11,7 @@ import java.util.Collection;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 //@EqualsAndHashCode(exclude = {"author"})
 //@JsonIdentityInfo(

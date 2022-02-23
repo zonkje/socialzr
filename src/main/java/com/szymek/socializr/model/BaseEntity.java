@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @SuperBuilder
 @MappedSuperclass
 @EqualsAndHashCode
