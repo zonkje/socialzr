@@ -1,20 +1,22 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.dto.PostDTO;
+import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.mapper.PostMapper;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class PostServiceImpl implements PostService{
+@RequiredArgsConstructor
+public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final PostMapper postMapper;
 
     @Override
     public Collection<Post> findAllByAuthor() {
@@ -22,22 +24,30 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Collection<Post> findAll() {
-        return (Collection<Post>) postRepository.findAll();
+    public Collection<PostDTO> findAll() {
+        return postRepository.findAll()
+                .stream()
+                .map(postMapper::toPostDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Post> findById(Long postId) {
-        return postRepository.findById(postId);
+    public PostDTO findById(Long postId) {
+        Post post = postRepository
+                .findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+        return postMapper.toPostDTO(post);
     }
 
     @Override
-    public Post create(Post post) {
-        return postRepository.save(post);
+    public PostDTO create(PostDTO postDTO) {
+        Post post = postMapper.toPost(postDTO);
+        return postMapper.toPostDTO(postRepository.save(post));
     }
 
     @Override
-    public void delete(Post post) {
+    public void delete(PostDTO postDTO) {
+        Post post = postMapper.toPost(postDTO);
         postRepository.delete(post);
     }
 

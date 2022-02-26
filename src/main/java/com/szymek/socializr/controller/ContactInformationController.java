@@ -1,40 +1,30 @@
 package com.szymek.socializr.controller;
 
-import com.szymek.socializr.exception.ResourceNotFoundException;
-import com.szymek.socializr.model.ContactInformation;
-import com.szymek.socializr.repository.ContactInformationRepository;
+import com.szymek.socializr.dto.ContactInformationDTO;
 import com.szymek.socializr.service.ContactInformationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/contact_information")
 public class ContactInformationController {
 
     private final ContactInformationService contactInformationService;
 
-    public ContactInformationController(ContactInformationService contactInformationService) {
-        this.contactInformationService = contactInformationService;
-    }
-
     @GetMapping("/{contactInformationId}")
-    public ResponseEntity<?> getContactInformation(@PathVariable("contactInformationId") Long contactInformationId){
-        return contactInformationService
-                .findById(contactInformationId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Contact Information", "ID", contactInformationId));
+    public ResponseEntity<ContactInformationDTO> getContactInformation(@PathVariable("contactInformationId") Long contactInformationId){
+        ContactInformationDTO contactInformationDTO = contactInformationService.findById(contactInformationId);
+
+        return new ResponseEntity<>(contactInformationDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createContactInformation(@RequestBody ContactInformation contactInformation){
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromHttpUrl("http://localhost:8080/contact_information/" +
-                                contactInformationService.create(contactInformation).getId())
-                        .build()
-                        .toUri()
-                )
-                .body(contactInformation);
+    public ResponseEntity<ContactInformationDTO> createContactInformation(@RequestBody ContactInformationDTO contactInformationDTO){
+        ContactInformationDTO createdContactInformation = contactInformationService.create(contactInformationDTO);
+
+        return new ResponseEntity<>(createdContactInformation, HttpStatus.CREATED);
     }
 }

@@ -1,6 +1,8 @@
 package com.szymek.socializr.service;
 
-import com.szymek.socializr.model.SocialGroup;
+import com.szymek.socializr.dto.SocialGroupDTO;
 
-public interface SocialGroupService extends CrudService<SocialGroup, Long> {
+
+public interface SocialGroupService extends CrudService<SocialGroupDTO, Long> {
+
 }

@@ -1,38 +1,48 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.dto.UserDTO;
+import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.mapper.UserMapper;
 import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @Override
+    public Collection<UserDTO> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<User> findAll() {
-        return (Collection<User>) userRepository.findAll();
+    public UserDTO findById(Long userId) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
+
+        return userMapper.toUserDTO(user);
     }
 
     @Override
-    public Optional<User> findById(Long userId) {
-        return userRepository.findById(userId);
+    public UserDTO create(UserDTO userDTO) {
+        User user = userMapper.toUser(userDTO);
+        return userMapper.toUserDTO(userRepository.save(user));
     }
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
-    public void delete(User object) {
+    public void delete(UserDTO object) {
 
     }
 

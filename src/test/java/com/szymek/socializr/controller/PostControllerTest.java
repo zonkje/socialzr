@@ -1,5 +1,6 @@
 package com.szymek.socializr.controller;
 
+import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.service.PostService;
 import org.hamcrest.Matchers;
@@ -39,15 +40,14 @@ class PostControllerTest {
 
     MockMvc mockMvc;
 
-    Post post;
+    PostDTO postDTO;
 
     @BeforeEach
     void setUp() {
 
-        post = Post.builder()
-                .id(1L)
-                .text(TEXT)
-                .build();
+        postDTO = new PostDTO();
+        postDTO.setId(1L);
+        postDTO.setText(TEXT);
 
         mockMvc = MockMvcBuilders.standaloneSetup(postController).build();
     }
@@ -55,22 +55,26 @@ class PostControllerTest {
     @Test
     void getPost() throws Exception {
 
-        given(postService.findById(any())).willReturn(Optional.of(post));
+        given(postService.findById(any())).willReturn(postDTO);
 
-        mockMvc.perform(get("/post/" + post.getId()))
+        mockMvc.perform(get("/post/" + postDTO.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id" , is(post.getId().intValue())))
-                .andExpect(jsonPath("$.text", is(post.getText())));
+                .andExpect(jsonPath("$.id" , is(postDTO.getId().intValue())))
+                .andExpect(jsonPath("$.text", is(postDTO.getText())));
     }
 
     @Test
     @DisplayName("Should list all posts when making GET request to endpoint /post")
     void getAllPosts() throws Exception {
-        Post post1 = Post.builder().id(1L).text(TEXT).build();
-        Post post2 = Post.builder().id(2L).text(TEXT+"2").build();
+        PostDTO postDTO1 = new PostDTO();
+        PostDTO postDTO2 = new PostDTO();
+        postDTO1.setId(1L);
+        postDTO2.setId(2L);
+        postDTO1.setText(TEXT);
+        postDTO2.setText(TEXT+"2");
 
-        Mockito.when(postService.findAll()).thenReturn(asList(post1, post2));
+        Mockito.when(postService.findAll()).thenReturn(asList(postDTO1, postDTO2));
 
         mockMvc.perform(get("/post"))
                 .andExpect(status().isOk())

@@ -1,6 +1,6 @@
 package com.szymek.socializr.service;
 
-import com.szymek.socializr.model.User;
+import com.szymek.socializr.dto.UserDTO;
 
-public interface UserService extends CrudService<User, Long>{
+public interface UserService extends CrudService<UserDTO, Long>{
 }

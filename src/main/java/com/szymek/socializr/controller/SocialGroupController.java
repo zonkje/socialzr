@@ -1,48 +1,40 @@
 package com.szymek.socializr.controller;
 
-import com.szymek.socializr.exception.ResourceNotFoundException;
-import com.szymek.socializr.model.SocialGroup;
-import com.szymek.socializr.repository.SocialGroupRepository;
+import com.szymek.socializr.dto.SocialGroupDTO;
 import com.szymek.socializr.service.SocialGroupService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/social_group")
 public class SocialGroupController {
 
     private final SocialGroupService socialGroupService;
 
-    public SocialGroupController(SocialGroupService socialGroupService) {
-        this.socialGroupService = socialGroupService;
-    }
 
     @GetMapping("/{socialGroupId}")
-    public ResponseEntity<?> getSocialGroup(@PathVariable("socialGroupId") Long socialGroupId){
-        return socialGroupService
-                .findById(socialGroupId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
+    public ResponseEntity<SocialGroupDTO> getSocialGroup(@PathVariable("socialGroupId") Long socialGroupId){
+        SocialGroupDTO socialGroupDTO = socialGroupService.findById(socialGroupId);
+
+        return new ResponseEntity<>(socialGroupDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllSocialGroups(){
-        return ResponseEntity.ok(socialGroupService.findAll());
+    public ResponseEntity<Collection<SocialGroupDTO>> getAllSocialGroups(){
+        Collection<SocialGroupDTO> socialGroupDTOS = socialGroupService.findAll();
+        return new ResponseEntity<>(socialGroupDTOS, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createSocialGroup(@RequestBody SocialGroup socialGroup){
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromHttpUrl("http://localhost:8080/socialGroup/" +
-                                socialGroupService.create(socialGroup).getId())
-                        .build()
-                        .toUri()
-                )
-                .body(socialGroup);
+    public ResponseEntity<SocialGroupDTO> createSocialGroup(@RequestBody SocialGroupDTO socialGroupDTO){
+        SocialGroupDTO createdSocialGroupDTO = socialGroupService.create(socialGroupDTO);
+
+        return new ResponseEntity<>(createdSocialGroupDTO, HttpStatus.CREATED);
     }
 
 }

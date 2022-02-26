@@ -1,47 +1,38 @@
 package com.szymek.socializr.controller;
 
-import com.szymek.socializr.exception.ResourceNotFoundException;
-import com.szymek.socializr.model.Comment;
-import com.szymek.socializr.repository.CommentRepository;
+import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.service.CommentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/comment")
 public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
     @GetMapping("/{commentId}")
-    public ResponseEntity<?> getComment(@PathVariable("commentId") Long commentId){
-        return commentService
-                .findById(commentId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
+    public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") Long commentId){
+        CommentDTO commentDTO = commentService.findById(commentId);
+
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllComments(){
-        return ResponseEntity.ok(commentService.findAll());
+    public ResponseEntity<Collection<CommentDTO>> getAllComments(){
+        Collection<CommentDTO> commentDTOS = commentService.findAll();
+        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?>  createComment(@RequestBody Comment comment){
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromHttpUrl("http://localhost:8080/comment/" +
-                                commentService.create(comment).getId())
-                        .build()
-                        .toUri()
-                )
-                .body(comment);
+    public ResponseEntity<?>  createComment(@RequestBody CommentDTO commentDTO){
+        CommentDTO createdComment = commentService.create(commentDTO);
+
+        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 }

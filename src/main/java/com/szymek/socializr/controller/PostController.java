@@ -1,12 +1,11 @@
 package com.szymek.socializr.controller;
 
-import com.szymek.socializr.exception.ResourceNotFoundException;
-import com.szymek.socializr.model.Post;
+import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
 
@@ -18,27 +17,23 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getPost(@PathVariable("postId") Long postId) {
-        return postService
-                .findById(postId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+    public ResponseEntity<PostDTO> getPost(@PathVariable("postId") Long postId) {
+        PostDTO postDTO = postService.findById(postId);
+
+        return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllPosts() {
-        return ResponseEntity.ok(postService.findAll());
+    public ResponseEntity<Collection<PostDTO>> getAllPosts() {
+        Collection<PostDTO> postDTOS = postService.findAll();
+        return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
+    //TODO -add URL to response
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody Post post) {
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromHttpUrl("http://localhost:8080/post/" +
-                                postService.create(post).getId())
-                        .build()
-                        .toUri()
-                )
-                .body(post);
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+        PostDTO createdPost = postService.create(postDTO);
+
+        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 }
