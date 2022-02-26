@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Data
@@ -20,10 +22,12 @@ import java.util.Collection;
 @Table(name = "post")
 public class Post extends BaseEntity{
 
+    @NotBlank(message = "Post text cannot be blank")
     @Lob
     @Column(name = "text")
     private String text;
 
+    @NotNull(message = "Post author cannot be null")
     @ManyToOne
     @JoinColumn(name = "post_author_id")
     private User author;

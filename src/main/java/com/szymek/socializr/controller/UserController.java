@@ -4,10 +4,14 @@ import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.Collection;
 
+@Validated
 @RestController
 @RequestMapping(path = "/user")
 public class UserController {
@@ -19,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable("userId") @Min(1) Long userId) {
         UserDTO userDTO = userService.findById(userId);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -32,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.create(userDTO);
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);

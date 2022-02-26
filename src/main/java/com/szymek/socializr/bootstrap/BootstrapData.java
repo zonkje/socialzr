@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
@@ -30,7 +29,7 @@ public class BootstrapData implements CommandLineRunner {
 
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
         Address a1 = Address.builder().address("Espl. des Particules 1, 1211").city("Geneva").state("Meyrin").country("Switzerland").build();
-        ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797 124 801").address(a1).build();
+        ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801").address(a1).build();
         Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).build();
         Comment c1 = Comment.builder().text("first comment").author(u1).post(p1).build();
         SocialGroup sg1 = SocialGroup.builder().name("Pioneers").description("First group ever created for this service").creator(u1).members(null)
