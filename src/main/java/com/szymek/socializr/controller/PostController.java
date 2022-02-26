@@ -19,7 +19,6 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<PostDTO> getPost(@PathVariable("postId") Long postId) {
         PostDTO postDTO = postService.findById(postId);
-
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
