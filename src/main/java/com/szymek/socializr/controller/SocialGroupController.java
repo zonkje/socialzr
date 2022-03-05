@@ -1,6 +1,7 @@
 package com.szymek.socializr.controller;
 
 import com.szymek.socializr.dto.SocialGroupDTO;
+import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.SocialGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,25 @@ public class SocialGroupController {
         SocialGroupDTO createdSocialGroupDTO = socialGroupService.create(socialGroupDTO);
 
         return new ResponseEntity<>(createdSocialGroupDTO, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{socialGroupId}")
+    public ResponseEntity<SocialGroupDTO> updateSocialGroup(@Valid @RequestBody SocialGroupDTO socialGroupDTO,
+                                              @PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
+        SocialGroupDTO updatedSocialGroup = socialGroupService.update(socialGroupDTO, socialGroupId);
+
+        return new ResponseEntity<>(updatedSocialGroup, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{socialGroupId}")
+    public void deleteSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+        socialGroupService.deleteById(socialGroupId);
+    }
+
+    @GetMapping("/members/{socialGroupId}")
+    public ResponseEntity<Collection<UserDTO>> getAllSocialGroupMembers(@PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+        Collection<UserDTO> socialGroupMembers = socialGroupService.findAllMembers(socialGroupId);
+        return new ResponseEntity<>(socialGroupMembers, HttpStatus.OK);
     }
 
 }

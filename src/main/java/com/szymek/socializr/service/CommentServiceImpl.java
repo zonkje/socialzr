@@ -4,13 +4,11 @@ import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.CommentMapper;
 import com.szymek.socializr.model.Comment;
-import com.szymek.socializr.model.Post;
 import com.szymek.socializr.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,12 +42,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void delete(CommentDTO object) {
-
+    public void deleteById(Long commentId) {
+        commentRepository.deleteById(commentId);
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public CommentDTO update(CommentDTO commentToUpdate, Long commentId) {
+        return commentRepository
+                .findById(commentId)
+                .map(comment -> {
+                            if (comment.getText() != null) {
+                                comment.setText(commentToUpdate.getText());
+                            }
+                            return commentMapper.toCommentDTO(commentRepository.save(comment));
+                        }
+                ).orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
     }
+
 }

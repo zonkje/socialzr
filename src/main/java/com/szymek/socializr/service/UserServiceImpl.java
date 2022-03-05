@@ -42,12 +42,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void delete(UserDTO object) {
+    public void deleteById(Long userId) {
 
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public UserDTO update(UserDTO userToUpdate, Long userId) {
+        return null;
     }
 }

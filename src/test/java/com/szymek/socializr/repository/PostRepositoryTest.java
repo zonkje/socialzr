@@ -1,6 +1,7 @@
 package com.szymek.socializr.repository;
 
 import com.szymek.socializr.model.Post;
+import com.szymek.socializr.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -20,7 +21,15 @@ class PostRepositoryTest {
 
     @Test
     public void shouldSavePost(){
-        Post expectedPostObject = Post.builder().text(TEXT).build();
+        User user = User.builder()
+                .id(1L)
+                .firstName("Test first name")
+                .lastName("Test last name")
+                .build();
+        Post expectedPostObject = Post.builder()
+                .text(TEXT)
+                .author(user)
+                .build();
 
         Post actualPostObject = postRepository.save(expectedPostObject);
 

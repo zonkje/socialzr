@@ -10,5 +10,6 @@ import java.util.Collection;
 public interface CommentRepository extends CrudRepository<Comment, Long> {
 
     Collection<Comment> findAll();
+    Collection<Comment> findCommentsByPostId(Long postId);
 
 }

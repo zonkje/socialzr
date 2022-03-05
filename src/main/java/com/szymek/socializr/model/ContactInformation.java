@@ -13,8 +13,12 @@ import javax.validation.constraints.Pattern;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "contact_information")
 public class ContactInformation extends BaseEntity{
+
+/*    @Id
+    private Long id;*/
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email is invalid")

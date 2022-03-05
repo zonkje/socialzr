@@ -21,22 +21,37 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") @Min(1) Long commentId){
+    public ResponseEntity<CommentDTO> getComment(@PathVariable("commentId") @Min(1) Long commentId) {
         CommentDTO commentDTO = commentService.findById(commentId);
 
         return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<CommentDTO>> getAllComments(){
-        Collection<CommentDTO> commentDTOS = commentService.findAll();
-        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
-    }
-
     @PostMapping
-    public ResponseEntity<?>  createComment(@Valid @RequestBody CommentDTO commentDTO){
+    public ResponseEntity<CommentDTO> createComment(@Valid @RequestBody CommentDTO commentDTO) {
         CommentDTO createdComment = commentService.create(commentDTO);
 
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
+
+    //TODO: -this endpoint will be for getting all comments from logged user (after adding security)
+    @GetMapping
+    public ResponseEntity<Collection<CommentDTO>> getAllComments() {
+        Collection<CommentDTO> commentDTOS = commentService.findAll();
+        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentDTO> updateComment(@Valid @RequestBody CommentDTO commentDTO,
+                                                    @PathVariable("commentId") @Min(1) Long commentId) {
+        CommentDTO updatedComment = commentService.update(commentDTO, commentId);
+
+        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(@PathVariable("commentId") @Min(1) Long commentId){
+        commentService.deleteById(commentId);
+    }
+
 }

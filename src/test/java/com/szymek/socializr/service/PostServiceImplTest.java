@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,6 +43,8 @@ class PostServiceImplTest {
         returnPostDTO = new PostDTO();
         returnPostDTO.setId(1L);
         returnPostDTO.setText(DEFAULT_TEXT);
+        returnPostDTO.setAuthorId(1L);
+//        postMapper = PostMapper.INSTANCE;
     }
 
     @Test
@@ -75,13 +79,14 @@ class PostServiceImplTest {
     @Test
     @Disabled
     void findById() {
+//        System.out.println(returnPostDTO);
         Post post = postMapper.toPost(returnPostDTO);
-        System.out.println(post);
+//        System.out.println(post);
         Optional<Post> optionalPost = Optional.of(post);
         when(postRepository.findById(anyLong())).thenReturn(optionalPost);
-
+//        System.out.println(optionalPost);
         PostDTO postDTO = postService.findById(1L);
-
+//        System.out.println(postDTO);
         assertNotNull(postDTO);
     }
 
@@ -97,13 +102,6 @@ class PostServiceImplTest {
         PostDTO savedPost = postService.create(postDTOToSave);
 
         assertNotNull(savedPost);
-    }
-
-    @Test
-    void delete() {
-        postService.delete(returnPostDTO);
-
-        verify(postRepository).delete(any());
     }
 
     @Test

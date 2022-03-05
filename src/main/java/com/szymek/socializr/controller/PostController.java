@@ -1,5 +1,6 @@
 package com.szymek.socializr.controller;
 
+import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +33,30 @@ public class PostController {
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
-    //TODO -add URL to response
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostDTO postDTO) {
         PostDTO createdPost = postService.create(postDTO);
 
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostDTO> updatePost(@Valid @RequestBody PostDTO postDTO,
+                                                    @PathVariable("postId") @Min(1) Long postId) {
+        PostDTO updatedPost = postService.update(postDTO, postId);
+
+        return new ResponseEntity<>(updatedPost, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable("postId") @Min(1) Long postId){
+        postService.deleteById(postId);
+    }
+
+    @GetMapping("/comments/{postId}")
+    public ResponseEntity<Collection<CommentDTO>> getAllCommentsByPost(@PathVariable("postId") @Min(1) Long postId) {
+        Collection<CommentDTO> commentDTOS = postService.findAllPostComments(postId);
+        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
+    }
+
 }

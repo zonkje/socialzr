@@ -1,0 +1,8 @@
+= Socialzr REST API
+Szymon Radziszewski;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+ Free social networking microblogging service that allows registered members to broadcast posts and comments
+

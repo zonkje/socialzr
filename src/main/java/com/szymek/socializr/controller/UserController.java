@@ -42,4 +42,18 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    //TODO: -update, delete
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO,
+                                              @PathVariable("userId") @Min(1) Long userId) {
+        UserDTO updatedUser = userService.update(userDTO, userId);
+
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable("userId") @Min(1) Long userId){
+        userService.deleteById(userId);
+    }
+
 }

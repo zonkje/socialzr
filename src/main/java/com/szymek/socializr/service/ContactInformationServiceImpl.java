@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
-public class ContactInformationServiceImpl implements ContactInformationService{
+public class ContactInformationServiceImpl implements ContactInformationService {
 
     private final ContactInformationRepository contactInformationRepository;
     private final ContactInformationMapper contactInformationMapper;
@@ -37,12 +37,36 @@ public class ContactInformationServiceImpl implements ContactInformationService{
     }
 
     @Override
-    public void delete(ContactInformationDTO object) {
-
+    public void deleteById(Long contactInformationId) {
+        contactInformationRepository.deleteById(contactInformationId);
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
+    public ContactInformationDTO update(ContactInformationDTO contactInformationToUpdate, Long contactInformationId) {
+        return contactInformationRepository
+                .findById(contactInformationId)
+                .map(contactInformation -> {
+                            if (contactInformation.getEmail() != null) {
+                                contactInformation.setEmail(contactInformationToUpdate.getEmail());
+                            }
+                            if (contactInformation.getPhoneNumber() != null) {
+                                contactInformation.setPhoneNumber(contactInformationToUpdate.getPhoneNumber());
+                            }
+                            if (contactInformation.getAddress().getAddress() != null) {
+                                contactInformation.getAddress().setAddress(contactInformationToUpdate.getAddress().getAddress());
+                            }
+                            if (contactInformation.getAddress().getCity() != null) {
+                                contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
+                            }
+                            if (contactInformation.getAddress().getState() != null) {
+                                contactInformation.getAddress().setState(contactInformationToUpdate.getAddress().getState());
+                            }
+                            if (contactInformation.getAddress().getCity() != null) {
+                                contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
+                            }
+                            return contactInformationMapper.toContactInformationDTO(contactInformationRepository.save(contactInformation));
+                        }
+                ).orElseThrow(() -> new ResourceNotFoundException("Contact Information",
+                        "ID", contactInformationId));
     }
 }

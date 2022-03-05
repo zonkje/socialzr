@@ -32,4 +32,12 @@ public class ContactInformationController {
 
         return new ResponseEntity<>(createdContactInformation, HttpStatus.CREATED);
     }
+
+    @PatchMapping("/{contactInformationId}")
+    public ResponseEntity<ContactInformationDTO> updateContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO,
+                                                                          @PathVariable("contactInformationId") @Min(1) Long contactInformationId){
+        ContactInformationDTO updatedContactInformation = contactInformationService.update(contactInformationDTO, contactInformationId);
+
+        return new ResponseEntity<>(updatedContactInformation, HttpStatus.OK);
+    }
 }
