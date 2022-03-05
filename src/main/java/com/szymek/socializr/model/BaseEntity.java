@@ -2,12 +2,13 @@ package com.szymek.socializr.model;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -17,12 +18,17 @@ import java.io.Serializable;
 @SuperBuilder
 @MappedSuperclass
 @EqualsAndHashCode
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
-
-    //TODO: -add create date -add last modification date
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreatedDate
+    private Instant createDate;
+
+    @LastModifiedDate
+    private Instant lastModifiedDate;
 
 }
