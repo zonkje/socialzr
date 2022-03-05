@@ -3,7 +3,9 @@ package com.szymek.socializr.service;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.UserMapper;
+import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.model.User;
+import com.szymek.socializr.repository.SocialGroupRepository;
 import com.szymek.socializr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final SocialGroupRepository socialGroupRepository;
 
     @Override
     public Collection<UserDTO> findAll() {
@@ -43,11 +46,52 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteById(Long userId) {
-
+        userRepository.deleteById(userId);
     }
 
     @Override
     public UserDTO update(UserDTO userToUpdate, Long userId) {
-        return null;
+        return userRepository
+                .findById(userId)
+                .map(user -> {
+                            if (user.getFirstName() != null) {
+                                user.setFirstName(userToUpdate.getFirstName());
+                            }
+                            if (user.getLastName() != null) {
+                                user.setLastName(userToUpdate.getLastName());
+                            }
+                            return userMapper.toUserDTO(userRepository.save(user));
+                        }
+                ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
+    }
+
+    @Override
+    public void joinGroup(Long userId, Long socialGroupId) {
+        userRepository
+                .findById(userId)
+                .map(user -> {
+                            SocialGroup socialGroup = socialGroupRepository.findById(socialGroupId)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
+                            user.getSocialGroups().add(socialGroup);
+                            socialGroup.getMembers().add(user);
+                            socialGroupRepository.save(socialGroup);
+                            return userRepository.save(user);
+                        }
+                ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
+    }
+
+    @Override
+    public void leaveGroup(Long userId, Long socialGroupId) {
+        userRepository
+                .findById(userId)
+                .map(user -> {
+                            SocialGroup socialGroup = socialGroupRepository.findById(socialGroupId)
+                                    .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
+                            user.getSocialGroups().remove(socialGroup);
+                            socialGroup.getMembers().remove(user);
+                            socialGroupRepository.save(socialGroup);
+                            return userRepository.save(user);
+                        }
+                ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
     }
 }

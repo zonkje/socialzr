@@ -56,4 +56,16 @@ public class UserController {
         userService.deleteById(userId);
     }
 
+    @PatchMapping("/{userId}/join_group/{socialGroupId}")
+    public void joinSocialGroup(@PathVariable("userId") @Min(1) Long userId,
+                                @PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+        userService.joinGroup(userId, socialGroupId);
+    }
+
+    @PatchMapping("/{userId}/leave_group/{socialGroupId}")
+    public void leaveSocialGroup(@PathVariable("userId") @Min(1) Long userId,
+                                @PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+        userService.leaveGroup(userId, socialGroupId);
+    }
+
 }

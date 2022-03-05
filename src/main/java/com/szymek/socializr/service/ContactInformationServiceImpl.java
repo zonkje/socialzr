@@ -17,6 +17,7 @@ public class ContactInformationServiceImpl implements ContactInformationService 
     private final ContactInformationRepository contactInformationRepository;
     private final ContactInformationMapper contactInformationMapper;
 
+    //TODO -delete this
     @Override
     public Collection<ContactInformationDTO> findAll() {
         return null;
