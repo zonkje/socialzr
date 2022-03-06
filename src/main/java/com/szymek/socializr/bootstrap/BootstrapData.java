@@ -45,8 +45,8 @@ public class BootstrapData implements CommandLineRunner {
         sg1.setMembers(new ArrayList<>());
         sg1.getMembers().add(u1);
 
-        userRepository.save(u1);
         contactInformationRepository.save(ci1);
+        userRepository.save(u1);
         postRepository.save(p1);
         commentRepository.save(c1);
         socialGroupRepository.save(sg1);

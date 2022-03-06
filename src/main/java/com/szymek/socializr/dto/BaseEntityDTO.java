@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -15,5 +16,7 @@ import java.io.Serializable;
 public abstract class BaseEntityDTO implements Serializable {
 
     private Long id;
+    private Instant createDate;
+    private Instant lastModifiedDate;
 
 }
