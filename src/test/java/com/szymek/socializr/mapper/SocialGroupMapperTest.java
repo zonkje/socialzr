@@ -26,7 +26,7 @@ class SocialGroupMapperTest {
         socialGroupDTO.setAccessLevel(ACCESS_LEVEL);
 
         //when
-        SocialGroup socialGroup = socialGroupMapper.toSocialGroup(socialGroupDTO);
+        SocialGroup socialGroup = socialGroupMapper.toEntity(socialGroupDTO);
 
         //then
         assertEquals(Long.valueOf(1L), socialGroup.getId());
@@ -50,7 +50,7 @@ class SocialGroupMapperTest {
                 .build();
 
         //when
-        SocialGroupDTO socialGroupDTO = socialGroupMapper.toSocialGroupDTO(socialGroup);
+        SocialGroupDTO socialGroupDTO = socialGroupMapper.toDTO(socialGroup);
 
         //then
         assertEquals(1L, socialGroupDTO.getId());

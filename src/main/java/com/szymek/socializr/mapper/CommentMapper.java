@@ -8,15 +8,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface CommentMapper {
+public interface CommentMapper extends BeanMapper<Comment, CommentDTO> {
 
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
+    @Override
     @Mapping(source = "authorId", target = "author.id")
     @Mapping(source = "postId", target = "post.id")
-    Comment toComment(CommentDTO commentDTO);
+    Comment toEntity(CommentDTO dto);
 
-    @InheritInverseConfiguration(name = "toComment")
-    CommentDTO toCommentDTO(Comment comment);
-
+    @Override
+    @InheritInverseConfiguration(name = "toEntity")
+    CommentDTO toDTO(Comment entity);
 }

@@ -19,7 +19,7 @@ class PostMapperTest {
         post.setId(1L);
 
         //when
-        PostDTO postDTO = postMapper.toPostDTO(post);
+        PostDTO postDTO = postMapper.toDTO(post);
 
         //then
         assertEquals(Long.valueOf(1L), postDTO.getId());
@@ -35,7 +35,7 @@ class PostMapperTest {
         postDTO.setId(1L);
 
         //when
-        Post post = postMapper.toPost(postDTO);
+        Post post = postMapper.toEntity(postDTO);
 
         //then
         assertEquals(Long.valueOf(1L), post.getId());

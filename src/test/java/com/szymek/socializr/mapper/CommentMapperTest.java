@@ -22,7 +22,7 @@ class CommentMapperTest {
         commentDTO.setPostId(3L);
 
         //when
-        Comment comment = commentMapper.toComment(commentDTO);
+        Comment comment = commentMapper.toEntity(commentDTO);
 
         //then
         assertEquals(1L, comment.getId());
@@ -41,7 +41,7 @@ class CommentMapperTest {
         comment.setText(TEXT);
 
         //when
-        CommentDTO commentDTO = commentMapper.toCommentDTO(comment);
+        CommentDTO commentDTO = commentMapper.toDTO(comment);
 
         //then
         assertEquals(Long.valueOf(1L), commentDTO.getId());

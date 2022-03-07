@@ -37,7 +37,7 @@ public class SocialGroupServiceImpl implements SocialGroupService {
         List<SocialGroup> socialGroupsList = socialGroups.getContent();
         return socialGroupsList
                 .stream()
-                .map(socialGroupMapper::toSocialGroupDTO)
+                .map(socialGroupMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -46,13 +46,13 @@ public class SocialGroupServiceImpl implements SocialGroupService {
         SocialGroup socialGroup = socialGroupRepository
                 .findById(socialGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
-        return socialGroupMapper.toSocialGroupDTO(socialGroup);
+        return socialGroupMapper.toDTO(socialGroup);
     }
 
     @Override
     public SocialGroupDTO create(SocialGroupDTO socialGroupDTO) {
-        SocialGroup socialGroup = socialGroupMapper.toSocialGroup(socialGroupDTO);
-        return socialGroupMapper.toSocialGroupDTO(socialGroupRepository.save(socialGroup));
+        SocialGroup socialGroup = socialGroupMapper.toEntity(socialGroupDTO);
+        return socialGroupMapper.toDTO(socialGroupRepository.save(socialGroup));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class SocialGroupServiceImpl implements SocialGroupService {
                                     socialGroup.setAccessLevel(AccessLevel.PUBLIC);
                                 }
                             }
-                            return socialGroupMapper.toSocialGroupDTO(socialGroupRepository.save(socialGroup));
+                            return socialGroupMapper.toDTO(socialGroupRepository.save(socialGroup));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
     }
@@ -94,7 +94,7 @@ public class SocialGroupServiceImpl implements SocialGroupService {
         List<User> socialGroupMembersList = socialGroupMembers.getContent();
         return socialGroupMembersList
                 .stream()
-                .map(userMapper::toUserDTO)
+                .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

@@ -8,16 +8,17 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface UserMapper extends BeanMapper<User, UserDTO> {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    @Override
     @Mapping(source = "contactInformationId", target = "contactInformation.id")
     @Mapping(ignore = true, target = "posts")
     @Mapping(ignore = true, target = "socialGroups")
-    User toUser(UserDTO userDTO);
+    User toEntity(UserDTO dto);
 
-    @InheritInverseConfiguration(name = "toUser")
-    UserDTO toUserDTO(User user);
-
+    @Override
+    @InheritInverseConfiguration(name = "toEntity")
+    UserDTO toDTO(User entity);
 }

@@ -8,15 +8,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface SocialGroupMapper {
+public interface SocialGroupMapper extends BeanMapper<SocialGroup, SocialGroupDTO>{
 
     SocialGroupMapper INSTANCE = Mappers.getMapper(SocialGroupMapper.class);
 
+    @Override
     @Mapping(source = "creatorId", target = "creator.id")
     @Mapping(ignore = true, target = "members")
-    SocialGroup toSocialGroup(SocialGroupDTO socialGroupDTO);
+    SocialGroup toEntity(SocialGroupDTO dto);
 
-    @InheritInverseConfiguration(name = "toSocialGroup")
-    SocialGroupDTO toSocialGroupDTO(SocialGroup socialGroup);
-
+    @Override
+    @InheritInverseConfiguration(name = "toEntity")
+    SocialGroupDTO toDTO(SocialGroup entity);
 }

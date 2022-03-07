@@ -24,7 +24,7 @@ class UserMapperTest {
         userDTO.setContactInformationId(2L);
 
         //when
-        User user = userMapper.toUser(userDTO);
+        User user = userMapper.toEntity(userDTO);
 
         //then
         assertEquals(Long.valueOf(1L), user.getId());
@@ -46,7 +46,7 @@ class UserMapperTest {
                 .build();
 
         //when
-        UserDTO userDTO = userMapper.toUserDTO(user);
+        UserDTO userDTO = userMapper.toDTO(user);
 
         //then
         assertEquals(Long.valueOf(1L), userDTO.getId());

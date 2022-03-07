@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
         List<Post> postsList = posts.getContent();
         return postsList
                 .stream()
-                .map(postMapper::toPostDTO)
+                .map(postMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -45,13 +45,13 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository
                 .findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
-        return postMapper.toPostDTO(post);
+        return postMapper.toDTO(post);
     }
 
     @Override
     public PostDTO create(PostDTO postDTO) {
-        Post post = postMapper.toPost(postDTO);
-        return postMapper.toPostDTO(postRepository.save(post));
+        Post post = postMapper.toEntity(postDTO);
+        return postMapper.toDTO(postRepository.save(post));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
                             if (post.getText() != null) {
                                 post.setText(postToUpdate.getText());
                             }
-                            return postMapper.toPostDTO(postRepository.save(post));
+                            return postMapper.toDTO(postRepository.save(post));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
     }
@@ -79,7 +79,7 @@ public class PostServiceImpl implements PostService {
         List<Comment> commentsList = comments.getContent();
         return commentsList
                 .stream()
-                .map(commentMapper::toCommentDTO)
+                .map(commentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

@@ -28,13 +28,13 @@ public class ContactInformationServiceImpl implements ContactInformationService 
         ContactInformation contactInformation = contactInformationRepository
                 .findById(contactInformationId).orElseThrow(() -> new ResourceNotFoundException("Contact Information",
                         "ID", contactInformationId));
-        return contactInformationMapper.toContactInformationDTO(contactInformation);
+        return contactInformationMapper.toDTO(contactInformation);
     }
 
     @Override
     public ContactInformationDTO create(ContactInformationDTO contactInformationDTO) {
-        ContactInformation contactInformation = contactInformationMapper.toContactInformation(contactInformationDTO);
-        return contactInformationMapper.toContactInformationDTO(contactInformationRepository.save(contactInformation));
+        ContactInformation contactInformation = contactInformationMapper.toEntity(contactInformationDTO);
+        return contactInformationMapper.toDTO(contactInformationRepository.save(contactInformation));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ContactInformationServiceImpl implements ContactInformationService 
                             if (contactInformation.getAddress().getCity() != null) {
                                 contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
                             }
-                            return contactInformationMapper.toContactInformationDTO(contactInformationRepository.save(contactInformation));
+                            return contactInformationMapper.toDTO(contactInformationRepository.save(contactInformation));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("Contact Information",
                         "ID", contactInformationId));

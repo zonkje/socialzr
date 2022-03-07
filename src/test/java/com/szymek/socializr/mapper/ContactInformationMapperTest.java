@@ -34,7 +34,7 @@ class ContactInformationMapperTest {
         );
 
         //when
-        ContactInformation contactInformation = contactInformationMapper.toContactInformation(contactInformationDTO);
+        ContactInformation contactInformation = contactInformationMapper.toEntity(contactInformationDTO);
 
         //then
         assertEquals(Long.valueOf(1L), contactInformation.getId());
@@ -67,7 +67,7 @@ class ContactInformationMapperTest {
                 .build();
 
         //when
-        ContactInformationDTO contactInformationDTO = contactInformationMapper.toContactInformationDTO(contactInformation);
+        ContactInformationDTO contactInformationDTO = contactInformationMapper.toDTO(contactInformation);
 
         //then
         assertEquals(Long.valueOf(1L), contactInformationDTO.getId());

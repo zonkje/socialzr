@@ -7,11 +7,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface ContactInformationMapper {
+public interface ContactInformationMapper extends BeanMapper<ContactInformation, ContactInformationDTO>{
 
     ContactInformationMapper INSTANCE = Mappers.getMapper(ContactInformationMapper.class);
 
-    ContactInformation toContactInformation(ContactInformationDTO contactInformationDTO);
+    @Override
+    ContactInformation toEntity(ContactInformationDTO dto);
 
-    ContactInformationDTO toContactInformationDTO(ContactInformation contactInformation);
+    @Override
+    ContactInformationDTO toDTO(ContactInformation entity);
 }

@@ -8,15 +8,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface PostMapper {
+public interface PostMapper extends BeanMapper<Post, PostDTO> {
 
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
+    @Override
     @Mapping(source = "authorId", target = "author.id")
     @Mapping(ignore = true, target = "comments")
-    Post toPost(PostDTO postDTO);
+    Post toEntity(PostDTO dto);
 
-    @InheritInverseConfiguration(name = "toPost")
-    PostDTO toPostDTO(Post post);
-
+    @Override
+    @InheritInverseConfiguration(name = "toEntity")
+    PostDTO toDTO(Post entity);
 }

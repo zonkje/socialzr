@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         List<User> usersList = users.getContent();
         return usersList
                 .stream()
-                .map(userMapper::toUserDTO)
+                .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -43,13 +43,13 @@ public class UserServiceImpl implements UserService {
                 .findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
 
-        return userMapper.toUserDTO(user);
+        return userMapper.toDTO(user);
     }
 
     @Override
     public UserDTO create(UserDTO userDTO) {
-        User user = userMapper.toUser(userDTO);
-        return userMapper.toUserDTO(userRepository.save(user));
+        User user = userMapper.toEntity(userDTO);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
                             if (user.getLastName() != null) {
                                 user.setLastName(userToUpdate.getLastName());
                             }
-                            return userMapper.toUserDTO(userRepository.save(user));
+                            return userMapper.toDTO(userRepository.save(user));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
     }

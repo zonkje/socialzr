@@ -4,7 +4,6 @@ import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.mapper.PostMapper;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.repository.PostRepository;
-import com.szymek.socializr.util.SocialzrConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -83,7 +82,7 @@ class PostServiceImplTest {
     @Disabled
     void findById() {
 //        System.out.println(returnPostDTO);
-        Post post = postMapper.toPost(returnPostDTO);
+        Post post = postMapper.toEntity(returnPostDTO);
 //        System.out.println(post);
         Optional<Post> optionalPost = Optional.of(post);
         when(postRepository.findById(anyLong())).thenReturn(optionalPost);
@@ -98,7 +97,7 @@ class PostServiceImplTest {
     void create() {
         PostDTO postDTOToSave = new PostDTO();
         postDTOToSave.setId(1L);
-        Post post = postMapper.toPost(postDTOToSave);
+        Post post = postMapper.toEntity(postDTOToSave);
 
         when(postRepository.save(any())).thenReturn(post);
 

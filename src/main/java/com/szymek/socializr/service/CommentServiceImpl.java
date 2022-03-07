@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> commentsList = comments.getContent();
         return commentsList
                 .stream()
-                .map(commentMapper::toCommentDTO)
+                .map(commentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -40,13 +40,13 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository
                 .findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
-        return commentMapper.toCommentDTO(comment);
+        return commentMapper.toDTO(comment);
     }
 
     @Override
     public CommentDTO create(CommentDTO commentDTO) {
-        Comment comment = commentMapper.toComment(commentDTO);
-        return commentMapper.toCommentDTO(commentRepository.save(comment));
+        Comment comment = commentMapper.toEntity(commentDTO);
+        return commentMapper.toDTO(commentRepository.save(comment));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
                             if (comment.getText() != null) {
                                 comment.setText(commentToUpdate.getText());
                             }
-                            return commentMapper.toCommentDTO(commentRepository.save(comment));
+                            return commentMapper.toDTO(commentRepository.save(comment));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
     }
