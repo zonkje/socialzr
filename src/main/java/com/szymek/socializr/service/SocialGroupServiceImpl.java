@@ -7,12 +7,18 @@ import com.szymek.socializr.mapper.SocialGroupMapper;
 import com.szymek.socializr.mapper.UserMapper;
 import com.szymek.socializr.model.AccessLevel;
 import com.szymek.socializr.model.SocialGroup;
+import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.SocialGroupRepository;
 import com.szymek.socializr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +31,11 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     private final UserMapper userMapper;
 
     @Override
-    public Collection<SocialGroupDTO> findAll() {
-        return socialGroupRepository.findAll()
+    public Collection<SocialGroupDTO> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<SocialGroup> socialGroups = socialGroupRepository.findAll(pageable);
+        List<SocialGroup> socialGroupsList = socialGroups.getContent();
+        return socialGroupsList
                 .stream()
                 .map(socialGroupMapper::toSocialGroupDTO)
                 .collect(Collectors.toList());
@@ -76,13 +85,14 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     }
 
     @Override
-    public Collection<UserDTO> findAllMembers(Long socialGroupId) {
+    public Collection<UserDTO> findAllMembers(Long socialGroupId, Integer page, Integer size) {
         SocialGroup socialGroup = socialGroupRepository
                 .findById(socialGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
-
-        return userRepository
-                .findUsersBySocialGroups(socialGroup)
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<User> socialGroupMembers = userRepository.findUsersBySocialGroups(socialGroup, pageable);
+        List<User> socialGroupMembersList = socialGroupMembers.getContent();
+        return socialGroupMembersList
                 .stream()
                 .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());

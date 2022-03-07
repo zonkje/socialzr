@@ -2,6 +2,7 @@ package com.szymek.socializr.controller;
 
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.UserService;
+import com.szymek.socializr.util.SocialzrConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,8 +31,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<UserDTO>> getAllUsers() {
-        Collection<UserDTO> userDTOS = userService.findAll();
+    public ResponseEntity<Collection<UserDTO>> getAllUsers(
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
+    ) {
+        Collection<UserDTO> userDTOS = userService.findAll(page, size);
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 

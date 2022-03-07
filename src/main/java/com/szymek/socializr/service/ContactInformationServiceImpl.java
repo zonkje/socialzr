@@ -19,7 +19,7 @@ public class ContactInformationServiceImpl implements ContactInformationService 
 
     //TODO -delete this
     @Override
-    public Collection<ContactInformationDTO> findAll() {
+    public Collection<ContactInformationDTO> findAll(Integer page, Integer size) {
         return null;
     }
 

@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @Cascade(value = {org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JoinColumn(name = "contact_information_id")
     private ContactInformation contactInformation;

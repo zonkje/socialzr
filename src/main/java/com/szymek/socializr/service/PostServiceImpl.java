@@ -5,13 +5,19 @@ import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.CommentMapper;
 import com.szymek.socializr.mapper.PostMapper;
+import com.szymek.socializr.model.Comment;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.repository.CommentRepository;
 import com.szymek.socializr.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +30,11 @@ public class PostServiceImpl implements PostService {
     private final CommentMapper commentMapper;
 
     @Override
-    public Collection<PostDTO> findAll() {
-        return postRepository.findAll()
+    public Collection<PostDTO> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Post> posts = postRepository.findAll(pageable);
+        List<Post> postsList = posts.getContent();
+        return postsList
                 .stream()
                 .map(postMapper::toPostDTO)
                 .collect(Collectors.toList());
@@ -64,9 +73,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Collection<CommentDTO> findAllPostComments(Long postId) {
-        return commentRepository
-                .findCommentsByPostId(postId)
+    public Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
+        List<Comment> commentsList = comments.getContent();
+        return commentsList
                 .stream()
                 .map(commentMapper::toCommentDTO)
                 .collect(Collectors.toList());

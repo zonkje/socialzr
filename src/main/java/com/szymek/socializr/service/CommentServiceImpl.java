@@ -6,9 +6,14 @@ import com.szymek.socializr.mapper.CommentMapper;
 import com.szymek.socializr.model.Comment;
 import com.szymek.socializr.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,8 +25,11 @@ public class CommentServiceImpl implements CommentService {
 
     //TODO -remove useless methods
     @Override
-    public Collection<CommentDTO> findAll() {
-        return commentRepository.findAll()
+    public Collection<CommentDTO> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Comment> comments = commentRepository.findAll(pageable);
+        List<Comment> commentsList = comments.getContent();
+        return commentsList
                 .stream()
                 .map(commentMapper::toCommentDTO)
                 .collect(Collectors.toList());

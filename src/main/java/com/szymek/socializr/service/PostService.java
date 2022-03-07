@@ -7,6 +7,6 @@ import java.util.Collection;
 
 public interface PostService extends CrudService<PostDTO, Long>{
 
-    Collection<CommentDTO> findAllPostComments(Long postId);
+    Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size);
 
 }

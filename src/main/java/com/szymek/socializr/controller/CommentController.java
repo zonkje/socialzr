@@ -2,6 +2,7 @@ package com.szymek.socializr.controller;
 
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.service.CommentService;
+import com.szymek.socializr.util.SocialzrConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,11 @@ public class CommentController {
 
     //TODO: -this endpoint will be for getting all comments from logged user (after adding security)
     @GetMapping
-    public ResponseEntity<Collection<CommentDTO>> getAllComments() {
-        Collection<CommentDTO> commentDTOS = commentService.findAll();
+    public ResponseEntity<Collection<CommentDTO>> getAllComments(
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
+    ) {
+        Collection<CommentDTO> commentDTOS = commentService.findAll(page, size);
         return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 

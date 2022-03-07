@@ -8,9 +8,14 @@ import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.SocialGroupRepository;
 import com.szymek.socializr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +27,11 @@ public class UserServiceImpl implements UserService {
     private final SocialGroupRepository socialGroupRepository;
 
     @Override
-    public Collection<UserDTO> findAll() {
-        return userRepository.findAll()
+    public Collection<UserDTO> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<User> users = userRepository.findAll(pageable);
+        List<User> usersList = users.getContent();
+        return usersList
                 .stream()
                 .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());

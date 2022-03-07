@@ -3,6 +3,7 @@ package com.szymek.socializr.controller;
 import com.szymek.socializr.dto.SocialGroupDTO;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.SocialGroupService;
+import com.szymek.socializr.util.SocialzrConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,43 +22,50 @@ public class SocialGroupController {
 
     private final SocialGroupService socialGroupService;
 
-
     @GetMapping("/{socialGroupId}")
-    public ResponseEntity<SocialGroupDTO> getSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+    public ResponseEntity<SocialGroupDTO> getSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
         SocialGroupDTO socialGroupDTO = socialGroupService.findById(socialGroupId);
 
         return new ResponseEntity<>(socialGroupDTO, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Collection<SocialGroupDTO>> getAllSocialGroups(){
-        Collection<SocialGroupDTO> socialGroupDTOS = socialGroupService.findAll();
+    public ResponseEntity<Collection<SocialGroupDTO>> getAllSocialGroups(
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
+    ) {
+        Collection<SocialGroupDTO> socialGroupDTOS = socialGroupService.findAll(page, size);
         return new ResponseEntity<>(socialGroupDTOS, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<SocialGroupDTO> createSocialGroup(@Valid @RequestBody SocialGroupDTO socialGroupDTO){
+    public ResponseEntity<SocialGroupDTO> createSocialGroup(@Valid @RequestBody SocialGroupDTO socialGroupDTO) {
         SocialGroupDTO createdSocialGroupDTO = socialGroupService.create(socialGroupDTO);
 
         return new ResponseEntity<>(createdSocialGroupDTO, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{socialGroupId}")
-    public ResponseEntity<SocialGroupDTO> updateSocialGroup(@Valid @RequestBody SocialGroupDTO socialGroupDTO,
-                                              @PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
+    public ResponseEntity<SocialGroupDTO> updateSocialGroup(
+            @Valid @RequestBody SocialGroupDTO socialGroupDTO,
+            @PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
         SocialGroupDTO updatedSocialGroup = socialGroupService.update(socialGroupDTO, socialGroupId);
 
         return new ResponseEntity<>(updatedSocialGroup, HttpStatus.OK);
     }
 
     @DeleteMapping("/{socialGroupId}")
-    public void deleteSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId){
+    public void deleteSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
         socialGroupService.deleteById(socialGroupId);
     }
 
     @GetMapping("/members/{socialGroupId}")
-    public ResponseEntity<Collection<UserDTO>> getAllSocialGroupMembers(@PathVariable("socialGroupId") @Min(1) Long socialGroupId){
-        Collection<UserDTO> socialGroupMembers = socialGroupService.findAllMembers(socialGroupId);
+    public ResponseEntity<Collection<UserDTO>> getAllSocialGroupMembers(
+            @PathVariable("socialGroupId") @Min(1) Long socialGroupId,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
+    ) {
+        Collection<UserDTO> socialGroupMembers = socialGroupService.findAllMembers(socialGroupId, page, size);
         return new ResponseEntity<>(socialGroupMembers, HttpStatus.OK);
     }
 

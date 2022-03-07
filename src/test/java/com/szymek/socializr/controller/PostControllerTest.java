@@ -93,7 +93,9 @@ class PostControllerTest {
                         responseFields(
                                 fieldWithPath("id").description("ID of the post"),
                                 fieldWithPath("text").description("Text of the post"),
-                                fieldWithPath("authorId").description("Post author ID")
+                                fieldWithPath("authorId").description("Post author ID"),
+                                fieldWithPath("createDate").description("Date of post creation"),
+                                fieldWithPath("lastModifiedDate").description("Date of post last modification")
                         )));
     }
 
@@ -107,7 +109,7 @@ class PostControllerTest {
         postDTO1.setText(TEXT);
         postDTO2.setText(TEXT + "2");
 
-        Mockito.when(postService.findAll()).thenReturn(asList(postDTO1, postDTO2));
+        Mockito.when(postService.findAll(any(), any())).thenReturn(asList(postDTO1, postDTO2));
 
         mockMvc.perform(get("/post"))
                 .andExpect(status().isOk())
@@ -136,7 +138,9 @@ class PostControllerTest {
                         requestFields(
                                 fields.withPath("id").ignored(),
                                 fields.withPath("text").description("Main content of the post"),
-                                fields.withPath("authorId").ignored()
+                                fields.withPath("authorId").ignored(),
+                                fields.withPath("createDate").ignored(),
+                                fields.withPath("lastModifiedDate").ignored()
                         )));
     }
 

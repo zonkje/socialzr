@@ -7,6 +7,6 @@ import java.util.Collection;
 
 public interface SocialGroupService extends CrudService<SocialGroupDTO, Long> {
 
-    Collection<UserDTO> findAllMembers(Long socialGroupId);
+    Collection<UserDTO> findAllMembers(Long socialGroupId, Integer page, Integer size);
 
 }
