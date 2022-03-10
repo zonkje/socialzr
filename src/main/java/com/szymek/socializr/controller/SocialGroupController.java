@@ -1,9 +1,10 @@
 package com.szymek.socializr.controller;
 
+import com.szymek.socializr.common.ApplicationResponse;
+import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.SocialGroupDTO;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.SocialGroupService;
-import com.szymek.socializr.util.SocialzrConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +56,10 @@ public class SocialGroupController {
     }
 
     @DeleteMapping("/{socialGroupId}")
-    public void deleteSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
-        socialGroupService.deleteById(socialGroupId);
+    public ResponseEntity<ApplicationResponse> deleteSocialGroup(@PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
+        ApplicationResponse response = socialGroupService.deleteById(socialGroupId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/members/{socialGroupId}")

@@ -20,14 +20,14 @@ public class ContactInformationController {
     private final ContactInformationService contactInformationService;
 
     @GetMapping("/{contactInformationId}")
-    public ResponseEntity<ContactInformationDTO> getContactInformation(@PathVariable("contactInformationId") @Min(1) Long contactInformationId){
+    public ResponseEntity<ContactInformationDTO> getContactInformation(@PathVariable("contactInformationId") @Min(1) Long contactInformationId) {
         ContactInformationDTO contactInformationDTO = contactInformationService.findById(contactInformationId);
 
         return new ResponseEntity<>(contactInformationDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ContactInformationDTO> createContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO){
+    public ResponseEntity<ContactInformationDTO> createContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO) {
         ContactInformationDTO createdContactInformation = contactInformationService.create(contactInformationDTO);
 
         return new ResponseEntity<>(createdContactInformation, HttpStatus.CREATED);
@@ -35,7 +35,7 @@ public class ContactInformationController {
 
     @PatchMapping("/{contactInformationId}")
     public ResponseEntity<ContactInformationDTO> updateContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO,
-                                                                          @PathVariable("contactInformationId") @Min(1) Long contactInformationId){
+                                                                          @PathVariable("contactInformationId") @Min(1) Long contactInformationId) {
         ContactInformationDTO updatedContactInformation = contactInformationService.update(contactInformationDTO, contactInformationId);
 
         return new ResponseEntity<>(updatedContactInformation, HttpStatus.OK);

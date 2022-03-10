@@ -1,5 +1,6 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.ContactInformationDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.ContactInformationMapper;
@@ -8,7 +9,12 @@ import com.szymek.socializr.repository.ContactInformationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +22,9 @@ public class ContactInformationServiceImpl implements ContactInformationService 
 
     private final ContactInformationRepository contactInformationRepository;
     private final ContactInformationMapper contactInformationMapper;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     //TODO -delete this
     @Override
@@ -38,8 +47,19 @@ public class ContactInformationServiceImpl implements ContactInformationService 
     }
 
     @Override
-    public void deleteById(Long contactInformationId) {
-        contactInformationRepository.deleteById(contactInformationId);
+    public ApplicationResponse deleteById(Long contactInformationId) {
+        String message;
+        if (contactInformationRepository.findById(contactInformationId).isPresent()) {
+            message = String.format("Contact information with ID: %s has been deleted", contactInformationId);
+            contactInformationRepository.deleteById(contactInformationId);
+        } else {
+            message = String.format("Contact information with ID: %s doesn't exist", contactInformationId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override

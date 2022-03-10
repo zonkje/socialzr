@@ -6,3 +6,16 @@ Szymon Radziszewski;
 
  Free social networking microblogging service that allows registered members to broadcast posts and comments
 
+=== API Resources
+
+include::{snippets}/post/curl-request.adoc[]
+include::{snippets}/post/http-request.adoc[]
+include::{snippets}/post/http-response.adoc[]
+include::{snippets}/post/httpie-request.adoc[]
+include::{snippets}/post/path-parameters.adoc[]
+include::{snippets}/post/request-body.adoc[]
+include::{snippets}/post/request-fields.adoc[]
+include::{snippets}/post/response-fields.adoc[]
+
+
+

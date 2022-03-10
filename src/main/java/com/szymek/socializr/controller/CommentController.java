@@ -1,8 +1,9 @@
 package com.szymek.socializr.controller;
 
+import com.szymek.socializr.common.ApplicationResponse;
+import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.service.CommentService;
-import com.szymek.socializr.util.SocialzrConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +55,10 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public void deleteComment(@PathVariable("commentId") @Min(1) Long commentId){
-        commentService.deleteById(commentId);
+    public ResponseEntity<ApplicationResponse> deleteComment(@PathVariable("commentId") @Min(1) Long commentId) {
+        ApplicationResponse response = commentService.deleteById(commentId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

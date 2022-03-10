@@ -18,7 +18,8 @@ public class ContactInformationDTO extends BaseEntityDTO {
     @Email(message = "Email is invalid")
     private String email;
 
-    @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}")
+    @NotBlank(message = "Phone number cannot be blank")
+    @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}", message = "TO MUSI BYC TELEFON")
     private String phoneNumber;
 
     private Address address;

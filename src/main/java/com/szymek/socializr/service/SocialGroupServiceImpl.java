@@ -1,5 +1,6 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.SocialGroupDTO;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
@@ -17,6 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +34,9 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     private final SocialGroupMapper socialGroupMapper;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     @Override
     public Collection<SocialGroupDTO> findAll(Integer page, Integer size) {
@@ -56,8 +64,19 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     }
 
     @Override
-    public void deleteById(Long socialGroupId) {
-        socialGroupRepository.deleteById(socialGroupId);
+    public ApplicationResponse deleteById(Long socialGroupId) {
+        String message;
+        if (socialGroupRepository.findById(socialGroupId).isPresent()) {
+            message = String.format("Social group with ID: %s has been deleted", socialGroupId);
+            socialGroupRepository.deleteById(socialGroupId);
+        } else {
+            message = String.format("Social group with ID: %s doesn't exist", socialGroupId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override

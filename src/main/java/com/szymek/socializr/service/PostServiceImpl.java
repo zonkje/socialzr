@@ -1,5 +1,6 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
@@ -16,6 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +33,9 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     @Override
     public Collection<PostDTO> findAll(Integer page, Integer size) {
@@ -68,8 +76,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteById(Long postId) {
-        postRepository.deleteById(postId);
+    public ApplicationResponse deleteById(Long postId) {
+        String message;
+        if (postRepository.findById(postId).isPresent()) {
+            message = String.format("Post with ID: %s has been deleted", postId);
+            commentRepository.deleteById(postId);
+        } else {
+            message = String.format("Post with ID: %s doesn't exist", postId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override

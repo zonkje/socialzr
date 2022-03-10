@@ -1,7 +1,9 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.exception.UserAlreadyInGroupException;
 import com.szymek.socializr.mapper.UserMapper;
 import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.model.User;
@@ -14,6 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +31,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final SocialGroupRepository socialGroupRepository;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     @Override
     public Collection<UserDTO> findAll(Integer page, Integer size) {
@@ -53,8 +62,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long userId) {
-        userRepository.deleteById(userId);
+    public ApplicationResponse deleteById(Long userId) {
+        String message;
+        if (userRepository.findById(userId).isPresent()) {
+            message = String.format("User with ID: %s has been deleted", userId);
+            userRepository.deleteById(userId);
+        } else {
+            message = String.format("User with ID: %s doesn't exist", userId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override
@@ -74,22 +94,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void joinGroup(Long userId, Long socialGroupId) {
+    public ApplicationResponse joinGroup(Long userId, Long socialGroupId) {
         userRepository
                 .findById(userId)
                 .map(user -> {
                             SocialGroup socialGroup = socialGroupRepository.findById(socialGroupId)
                                     .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
+                            if (socialGroup.getMembers().contains(user) || socialGroup.getCreator().equals(user)) {
+                                throw new UserAlreadyInGroupException(
+                                        userId,
+                                        socialGroupId);
+                            }
                             user.getSocialGroups().add(socialGroup);
                             socialGroup.getMembers().add(user);
                             socialGroupRepository.save(socialGroup);
                             return userRepository.save(user);
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(
+                        String.format("User with ID: %s has joined the group with ID: %s", userId, socialGroupId)
+                ))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override
-    public void leaveGroup(Long userId, Long socialGroupId) {
+    public ApplicationResponse leaveGroup(Long userId, Long socialGroupId) {
         userRepository
                 .findById(userId)
                 .map(user -> {
@@ -101,5 +133,12 @@ public class UserServiceImpl implements UserService {
                             return userRepository.save(user);
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(
+                        String.format("User with ID: %s has left the group with ID: %s", userId, socialGroupId)
+                ))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 }

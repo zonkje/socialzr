@@ -1,5 +1,6 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.CommentMapper;
@@ -12,6 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +27,9 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     //TODO -remove useless methods
     @Override
@@ -50,8 +58,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteById(Long commentId) {
-        commentRepository.deleteById(commentId);
+    public ApplicationResponse deleteById(Long commentId) {
+        String message;
+        if (commentRepository.findById(commentId).isPresent()) {
+            message = String.format("Comment with ID: %s has been deleted", commentId);
+            commentRepository.deleteById(commentId);
+        } else {
+            message = String.format("Comment with ID: %s doesn't exist", commentId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 
     @Override

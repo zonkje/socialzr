@@ -1,10 +1,11 @@
 package com.szymek.socializr.service;
 
+import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.UserDTO;
 
 public interface UserService extends CrudService<UserDTO, Long>{
 
-    void joinGroup(Long userId, Long socialGroupId);
-    void leaveGroup(Long userId, Long socialGroupId);
+    ApplicationResponse joinGroup(Long userId, Long socialGroupId);
+    ApplicationResponse leaveGroup(Long userId, Long socialGroupId);
 
 }

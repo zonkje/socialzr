@@ -1,4 +1,4 @@
-package com.szymek.socializr.util;
+package com.szymek.socializr.common;
 
 public class SocialzrConstants {
 

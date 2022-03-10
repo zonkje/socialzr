@@ -17,7 +17,7 @@ public class PostDTO extends BaseEntityDTO {
     @NotBlank(message = "Post text cannot be blank")
     private String text;
 
-//    @NotNull(message = "Post author ID cannot be null")   TODO -provide this in the future using Principals
+    @NotNull(message = "Post author ID cannot be null")   //TODO -provide this in the future using Principals
     private Long authorId;
 
 }
