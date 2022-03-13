@@ -22,6 +22,8 @@ public class ContactInformationDTO extends BaseEntityDTO {
     @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}", message = "TO MUSI BYC TELEFON")
     private String phoneNumber;
 
+    private String linkedinUrl;
+
     private Address address;
 
 }

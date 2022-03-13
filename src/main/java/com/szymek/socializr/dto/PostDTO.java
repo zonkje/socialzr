@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Setter
 @Getter
@@ -16,6 +17,8 @@ public class PostDTO extends BaseEntityDTO {
 
     @NotBlank(message = "Post text cannot be blank")
     private String text;
+
+    List<String> postLabels;
 
     @NotNull(message = "Post author ID cannot be null")   //TODO -provide this in the future using Principals
     private Long authorId;

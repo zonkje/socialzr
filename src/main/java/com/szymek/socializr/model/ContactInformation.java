@@ -30,6 +30,9 @@ public class ContactInformation extends BaseEntity{
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "linkedin_url")
+    private String linkedinUrl;
+
     @Embedded
     private Address address;
 

@@ -20,23 +20,21 @@ import java.util.Collection;
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
 @Table(name = "post")
-public class Post extends BaseEntity{
-
-    @NotBlank(message = "Post text cannot be blank")
-    @Lob
-    @Column(name = "text")
-    private String text;
-
-    @NotNull(message = "Post author cannot be null")
-    @ManyToOne
-    @JoinColumn(name = "post_author_id")
-    private User author;
+public class Post extends TextWidget{
 
 //    @JsonBackReference
     @OneToMany(
             mappedBy = "post",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private Collection<Comment> comments;
+
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Collection<PostLabel> postLabels;
 
 }

@@ -5,6 +5,7 @@ import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.CommentMapper;
+import com.szymek.socializr.mapper.PostLabelMapper;
 import com.szymek.socializr.mapper.PostMapper;
 import com.szymek.socializr.model.Comment;
 import com.szymek.socializr.model.Post;
@@ -33,6 +34,7 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
+    private final PostLabelMapper postLabelMapper;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -58,7 +60,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO create(PostDTO postDTO) {
-        Post post = postMapper.toEntity(postDTO);
+        Post post = postRepository.save(postMapper.toEntity(postDTO));
+        post.setPostLabels(postLabelMapper.map(postDTO.getPostLabels(), post));
         return postMapper.toDTO(postRepository.save(post));
     }
 
@@ -99,6 +102,28 @@ public class PostServiceImpl implements PostService {
         return commentsList
                 .stream()
                 .map(commentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<PostDTO> findAllByLabelId(Long labelId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Post> posts = postRepository.findPostsByPostLabelsId(labelId, pageable);
+        List<Post> postList = posts.getContent();
+        return postList
+                .stream()
+                .map(postMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<PostDTO> findAllByLabelName(String labelName, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Post> posts = postRepository.findPostByPostLabelsName(labelName, pageable);
+        List<Post> postList = posts.getContent();
+        return postList
+                .stream()
+                .map(postMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

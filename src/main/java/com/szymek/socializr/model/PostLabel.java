@@ -5,20 +5,22 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-//@EqualsAndHashCode(exclude = {"post", "author"})
-@Table(name = "comment")
-public class Comment extends TextWidget{
+@Table(name = "post_label")
+public class PostLabel extends BaseEntity{
 
-    @NotNull(message = "Comment must be assigned to the post")
-    @ManyToOne
+    @NotBlank(message = "Label name cannot be blank")
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
 }

@@ -9,4 +9,7 @@ public interface PostService extends CrudService<PostDTO, Long>{
 
     Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size);
 
+    Collection<PostDTO> findAllByLabelId(Long labelId, Integer page, Integer size);
+
+    Collection<PostDTO> findAllByLabelName(String labelName, Integer page, Integer size);
 }
