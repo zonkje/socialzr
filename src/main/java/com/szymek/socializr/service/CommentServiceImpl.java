@@ -2,10 +2,15 @@ package com.szymek.socializr.service;
 
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.CommentDTO;
+import com.szymek.socializr.dto.CommentThumbUpDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.exception.ThumbUpException;
 import com.szymek.socializr.mapper.CommentMapper;
+import com.szymek.socializr.mapper.CommentThumbUpMapper;
 import com.szymek.socializr.model.Comment;
+import com.szymek.socializr.model.CommentThumbUp;
 import com.szymek.socializr.repository.CommentRepository;
+import com.szymek.socializr.repository.CommentThumbUpRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +32,8 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final CommentThumbUpMapper commentThumbUpMapper;
+    private final CommentThumbUpRepository commentThumbUpRepository;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -86,4 +93,38 @@ public class CommentServiceImpl implements CommentService {
                 ).orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
     }
 
+    @Override
+    public CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO) {
+        Long commentId = commentThumbUpDTO.getCommentId();
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
+
+        boolean isAlreadyThumbUpByUser = comment.getCommentThumbUps().stream()
+                .anyMatch(
+                        commentThumbUp -> commentThumbUp.getAuthor().getId().equals(commentThumbUpDTO.getAuthorId())
+                );
+
+        if(!isAlreadyThumbUpByUser){
+            CommentThumbUp postThumbUp = commentThumbUpMapper.toEntity(commentThumbUpDTO);
+            return commentThumbUpMapper.toDTO(commentThumbUpRepository.save(postThumbUp));
+        } else {
+            throw new ThumbUpException(commentThumbUpDTO.getCommentId(), commentThumbUpDTO.getAuthorId());
+        }
+    }
+
+    @Override
+    public ApplicationResponse deleteCommentThumbUpById(Long thumbUpId) {
+        String message;
+        if (commentThumbUpRepository.findById(thumbUpId).isPresent()) {
+            message = String.format("Comment Thumb Up with ID: %s has been deleted", thumbUpId);
+            commentThumbUpRepository.deleteById(thumbUpId);
+        } else {
+            message = String.format("Comment Thumb Up with ID: %s doesn't exist", thumbUpId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
+    }
 }

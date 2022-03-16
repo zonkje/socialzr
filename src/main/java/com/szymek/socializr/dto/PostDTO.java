@@ -11,16 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class PostDTO extends BaseEntityDTO {
+public class PostDTO extends TextWidgetDTO {
 
     //TODO: -add author name field -add number of comments field
 
-    @NotBlank(message = "Post text cannot be blank")
-    private String text;
-
     List<String> postLabels;
 
-    @NotNull(message = "Post author ID cannot be null")   //TODO -provide this in the future using Principals
-    private Long authorId;
+    private Integer postThumbUpCount;
 
 }

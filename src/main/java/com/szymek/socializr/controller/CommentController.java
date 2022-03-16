@@ -3,6 +3,7 @@ package com.szymek.socializr.controller;
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.CommentDTO;
+import com.szymek.socializr.dto.CommentThumbUpDTO;
 import com.szymek.socializr.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,21 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApplicationResponse> deleteComment(@PathVariable("commentId") @Min(1) Long commentId) {
         ApplicationResponse response = commentService.deleteById(commentId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/thumb_up")
+    public ResponseEntity<CommentThumbUpDTO> addCommentThumbUp(@Valid @RequestBody CommentThumbUpDTO commentThumbUpDTO) {
+        CommentThumbUpDTO createdCommentThumbUpDTO = commentService.addThumbUpToComment(commentThumbUpDTO);
+
+        return new ResponseEntity<>(createdCommentThumbUpDTO, HttpStatus.CREATED);
+    }
+
+    //TODO -change path to /thumb_up/{commentId} when security will be configured
+    @DeleteMapping("/thumb_up/{thumbUpId}")
+    public ResponseEntity<ApplicationResponse> deleteCommentThumbUp(@PathVariable("thumbUpId") @Min(1) Long thumbUpId) {
+        ApplicationResponse response = commentService.deleteCommentThumbUpById(thumbUpId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

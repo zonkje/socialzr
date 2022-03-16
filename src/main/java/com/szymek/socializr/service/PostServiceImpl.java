@@ -3,14 +3,19 @@ package com.szymek.socializr.service;
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
+import com.szymek.socializr.dto.PostThumbUpDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.exception.ThumbUpException;
 import com.szymek.socializr.mapper.CommentMapper;
 import com.szymek.socializr.mapper.PostLabelMapper;
 import com.szymek.socializr.mapper.PostMapper;
+import com.szymek.socializr.mapper.PostThumbUpMapper;
 import com.szymek.socializr.model.Comment;
 import com.szymek.socializr.model.Post;
+import com.szymek.socializr.model.PostThumbUp;
 import com.szymek.socializr.repository.CommentRepository;
 import com.szymek.socializr.repository.PostRepository;
+import com.szymek.socializr.repository.PostThumbUpRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +40,8 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
     private final PostLabelMapper postLabelMapper;
+    private final PostThumbUpRepository postThumbUpRepository;
+    private final PostThumbUpMapper postThumbUpMapper;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -83,7 +90,7 @@ public class PostServiceImpl implements PostService {
         String message;
         if (postRepository.findById(postId).isPresent()) {
             message = String.format("Post with ID: %s has been deleted", postId);
-            commentRepository.deleteById(postId);
+            postRepository.deleteById(postId);
         } else {
             message = String.format("Post with ID: %s doesn't exist", postId);
         }
@@ -125,5 +132,42 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map(postMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUpDTO) {
+        Long postId = postThumbUpDTO.getPostId();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+
+        boolean isAlreadyThumbUpByUser = post.getPostThumbUps().stream()
+                .anyMatch(
+                        postThumbUp -> postThumbUp.getAuthor().getId().equals(postThumbUpDTO.getAuthorId())
+                );
+
+        if(!isAlreadyThumbUpByUser){
+            PostThumbUp postThumbUp = postThumbUpMapper.toEntity(postThumbUpDTO);
+            return postThumbUpMapper.toDTO(postThumbUpRepository.save(postThumbUp));
+        } else {
+            throw new ThumbUpException(postThumbUpDTO.getPostId(), postThumbUpDTO.getAuthorId());
+        }
+
+    }
+
+    //TODO -change it when security will be configured
+    @Override
+    public ApplicationResponse deletePostThumbUpById(Long thumbUpId) {
+        String message;
+        if (postThumbUpRepository.findById(thumbUpId).isPresent()) {
+            message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
+            postThumbUpRepository.deleteById(thumbUpId);
+        } else {
+            message = String.format("Post Thumb Up with ID: %s doesn't exist", thumbUpId);
+        }
+        return ApplicationResponse
+                .builder()
+                .messages(List.of(message))
+                .timeStamp(formatter.format(Instant.now()))
+                .build();
     }
 }

@@ -4,8 +4,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Data
@@ -36,5 +34,12 @@ public class Post extends TextWidget{
             orphanRemoval = true
     )
     private Collection<PostLabel> postLabels;
+
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Collection<PostThumbUp> postThumbUps;
 
 }

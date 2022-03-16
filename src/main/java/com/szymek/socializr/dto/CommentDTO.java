@@ -10,15 +10,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class CommentDTO extends BaseEntityDTO {
-
-    @NotBlank(message = "Comment text cannot be blank")
-    private String text;
-
-    @NotNull(message = "Comment author ID cannot be null")
-    private Long authorId;
+public class CommentDTO extends TextWidgetDTO {
 
     @NotNull(message = "Comment must be assigned to the post")
     private Long postId;
+
+    private Integer commentThumbUpCount;
 
 }

@@ -4,6 +4,7 @@ import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
+import com.szymek.socializr.dto.PostThumbUpDTO;
 import com.szymek.socializr.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,21 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApplicationResponse> deletePost(@PathVariable("postId") @Min(1) Long postId) {
         ApplicationResponse response = postService.deleteById(postId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/thumb_up")
+    public ResponseEntity<PostThumbUpDTO> addPostThumbUp(@Valid @RequestBody PostThumbUpDTO postThumbUpDTO) {
+        PostThumbUpDTO createdPostThumbUpDTO = postService.addThumbUpToPost(postThumbUpDTO);
+
+        return new ResponseEntity<>(createdPostThumbUpDTO, HttpStatus.CREATED);
+    }
+
+    //TODO -change path to /thumb_up/{postId} when security will be configured
+    @DeleteMapping("/thumb_up/{thumbUpId}")
+    public ResponseEntity<ApplicationResponse> deletePostThumbUp(@PathVariable("thumbUpId") @Min(1) Long thumbUpId) {
+        ApplicationResponse response = postService.deletePostThumbUpById(thumbUpId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

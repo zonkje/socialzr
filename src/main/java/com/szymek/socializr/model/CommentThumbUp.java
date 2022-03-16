@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Getter
@@ -13,8 +14,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "thumb_up")
-public class ThumbUp extends BaseEntity{
+@Table(name = "comment_thumb_up")
+public class CommentThumbUp extends BaseEntity {
 
     //TODO: -ignore createDate & lastModifiedDate
+    @ManyToOne
+    private Comment comment;
+
+    @ManyToOne
+    private User author;
 }

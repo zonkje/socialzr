@@ -3,6 +3,7 @@ package com.szymek.socializr.mapper;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.model.PostLabel;
+import com.szymek.socializr.model.PostThumbUp;
 import com.szymek.socializr.repository.PostLabelRepository;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -22,13 +23,19 @@ public interface PostMapper extends BeanMapper<Post, PostDTO> {
     @Mapping(source = "authorId", target = "author.id")
     @Mapping(ignore = true, target = "comments")
     @Mapping(ignore = true, target = "postLabels")
+    @Mapping(ignore = true, target = "postThumbUps")
     Post toEntity(PostDTO dto);
 
     @Override
     @InheritInverseConfiguration(name = "toEntity")
     @Mapping(ignore = false, target = "postLabels")
+    @Mapping(source = "postThumbUps", target = "postThumbUpCount")
     PostDTO toDTO(Post entity);
 
+    default Integer postThumbUpCountMap(Collection<PostThumbUp> postThumbUps){
+        if(postThumbUps == null) return 0;
+        return postThumbUps.size();
+    }
 //    Collection<PostLabel> map(List<String> value);
 //
 //    List<String> map(Collection<PostLabel> value);

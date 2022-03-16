@@ -1,14 +1,11 @@
 package com.szymek.socializr.exception;
 
-import com.szymek.socializr.common.ApplicationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
 import java.time.Instant;
@@ -56,6 +53,17 @@ public class SocialzrApplicationExceptionHandler {
                 .build(), status);
     }
 
+    @ExceptionHandler(ThumbUpException.class)
+    public ResponseEntity<ApplicationExceptionResponse> handleException(ThumbUpException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(ApplicationExceptionResponse.builder()
+                .messages(List.of(exception.getMessage()))
+                .httpStatus(status)
+                .httpStatusCode(status.value())
+                .timeStamp(formatter.format(Instant.now()))
+                .build(), status);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApplicationExceptionResponse> handleException(MethodArgumentNotValidException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -93,7 +101,8 @@ public class SocialzrApplicationExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(ApplicationExceptionResponse.builder()
                 .messages(List.of(
-                        "Unexpected error occurred"
+                        "Unexpected error occurred",
+                        exception.getMessage()
                 ))
                 .httpStatus(status)
                 .httpStatusCode(status.value())
