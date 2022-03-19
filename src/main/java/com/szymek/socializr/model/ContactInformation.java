@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,9 +20,6 @@ import javax.validation.constraints.Pattern;
 @Table(name = "contact_information")
 public class ContactInformation extends BaseEntity{
 
-/*    @Id
-    private Long id;*/
-
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email is invalid")
     @Column(name = "email")
@@ -30,8 +29,9 @@ public class ContactInformation extends BaseEntity{
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "linkedin_url")
-    private String linkedinUrl;
+    @Builder.Default
+    @ElementCollection
+    private List<String> websitesURLs = new ArrayList<>();
 
     @Embedded
     private Address address;

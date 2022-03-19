@@ -21,6 +21,9 @@ public class Address {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "zip_code")
+    private String zipCode;
+
     @Size(min = 2, message = "State name should be at least 2 characters long")
     @Column(name = "state")
     private String state;

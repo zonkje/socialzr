@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
-        Address a1 = Address.builder().address("Espl. des Particules 1, 1211").city("Geneva").state("Meyrin").country("Switzerland").build();
+        Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin").zipCode("1211").country("Switzerland").build();
         ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801").address(a1).build();
         PostLabel pl1 = PostLabel.builder().name("SELL").build();
         PostLabel pl2 = PostLabel.builder().name("LOCAL").build();
@@ -69,6 +70,7 @@ public class BootstrapData implements CommandLineRunner {
         sg1.setSocialGroupPosts(new ArrayList<>());
         sg1.getSocialGroupPosts().add(sgp1);
         sgp1.setSocialGroup(sg1);
+        ci1.getWebsitesURLs().addAll(List.of("https://www.linkedin.com/company/docker/", "https://www.linkedin.com/company/github/"));
 
         contactInformationRepository.save(ci1);
         userRepository.save(u1);

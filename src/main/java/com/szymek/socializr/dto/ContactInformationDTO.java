@@ -6,6 +6,7 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,7 +23,7 @@ public class ContactInformationDTO extends BaseEntityDTO {
     @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}", message = "TO MUSI BYC TELEFON")
     private String phoneNumber;
 
-    private String linkedinUrl;
+    private List<String> websitesURLs;
 
     private Address address;
 
