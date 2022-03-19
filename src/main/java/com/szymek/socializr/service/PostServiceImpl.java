@@ -1,19 +1,15 @@
 package com.szymek.socializr.service;
 
 import com.szymek.socializr.common.ApplicationResponse;
-import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.dto.PostThumbUpDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.exception.ThumbUpException;
-import com.szymek.socializr.mapper.CommentMapper;
 import com.szymek.socializr.mapper.PostLabelMapper;
 import com.szymek.socializr.mapper.PostMapper;
 import com.szymek.socializr.mapper.PostThumbUpMapper;
-import com.szymek.socializr.model.Comment;
 import com.szymek.socializr.model.Post;
 import com.szymek.socializr.model.PostThumbUp;
-import com.szymek.socializr.repository.CommentRepository;
 import com.szymek.socializr.repository.PostRepository;
 import com.szymek.socializr.repository.PostThumbUpRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +32,7 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
     private final PostMapper postMapper;
-    private final CommentMapper commentMapper;
     private final PostLabelMapper postLabelMapper;
     private final PostThumbUpRepository postThumbUpRepository;
     private final PostThumbUpMapper postThumbUpMapper;
@@ -102,17 +96,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
-        Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
-        List<Comment> commentsList = comments.getContent();
-        return commentsList
-                .stream()
-                .map(commentMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Collection<PostDTO> findAllByLabelId(Long labelId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<Post> posts = postRepository.findPostsByPostLabelsId(labelId, pageable);
@@ -126,7 +109,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Collection<PostDTO> findAllByLabelName(String labelName, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
-        Page<Post> posts = postRepository.findPostByPostLabelsName(labelName, pageable);
+        Page<Post> posts = postRepository.findPostsByPostLabelsName(labelName, pageable);
         List<Post> postList = posts.getContent();
         return postList
                 .stream()

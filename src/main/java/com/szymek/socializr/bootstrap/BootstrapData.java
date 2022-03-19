@@ -14,6 +14,7 @@ public class BootstrapData implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final SocialGroupPostRepository socialGroupPostRepository;
     private final CommentRepository commentRepository;
     private final SocialGroupRepository socialGroupRepository;
     private final ContactInformationRepository contactInformationRepository;
@@ -34,15 +35,23 @@ public class BootstrapData implements CommandLineRunner {
                 .accessLevel(AccessLevel.PUBLIC).build();
         PostThumbUp ptu1 = PostThumbUp.builder().post(p1).author(u1).build();
         CommentThumbUp ctu1 = CommentThumbUp.builder().comment(c1).author(u1).build();
+        SocialGroupPost sgp1 = SocialGroupPost.builder().text("Very first social group post in this page").author(u1)
+                .comments(null).postLabels(null).postThumbUps(null).socialGroup(null).build();
+        Comment c2 = Comment.builder().text("second comment").author(u1).post(sgp1).commentThumbUps(null).build();
 
         p1.setPostThumbUps(new ArrayList<>());
+        sgp1.setPostThumbUps(new ArrayList<>());
         c1.setCommentThumbUps(new ArrayList<>());
+        c2.setCommentThumbUps(new ArrayList<>());
         u1.setPosts(new ArrayList<>());
         u1.getPosts().add(p1);
         u1.setContactInformation(ci1);
         p1.setComments(new ArrayList<>());
+        sgp1.setComments(new ArrayList<>());
         p1.setPostLabels(new ArrayList<>());
+        sgp1.setPostLabels(new ArrayList<>());
         p1.getComments().add(c1);
+        sgp1.getComments().add(c2);
         p1.getPostLabels().add(pl1);
         p1.getPostLabels().add(pl2);
         pl1.setPost(p1);
@@ -53,6 +62,9 @@ public class BootstrapData implements CommandLineRunner {
         u1.getSocialGroups().add(sg1);
         sg1.setMembers(new ArrayList<>());
         sg1.getMembers().add(u1);
+        sg1.setSocialGroupPosts(new ArrayList<>());
+        sg1.getSocialGroupPosts().add(sgp1);
+        sgp1.setSocialGroup(sg1);
 
         contactInformationRepository.save(ci1);
         userRepository.save(u1);
@@ -61,5 +73,7 @@ public class BootstrapData implements CommandLineRunner {
         socialGroupRepository.save(sg1);
         postThumbUpRepository.save(ptu1);
         commentThumbUpRepository.save(ctu1);
+        postRepository.save(sgp1);
+        socialGroupPostRepository.save(sgp1);
     }
 }

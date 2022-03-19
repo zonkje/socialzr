@@ -40,6 +40,13 @@ public class SocialGroup extends BaseEntity {
     )
     private Collection<User> members;
 
+    @OneToMany(
+            mappedBy = "socialGroup",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Collection<SocialGroupPost> socialGroupPosts;
+
     @NotNull
     @Enumerated(value = EnumType.STRING)
     @Column(name = "access_level")

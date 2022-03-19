@@ -47,6 +47,16 @@ public class CommentController {
         return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<Collection<CommentDTO>> getAllCommentsByPost(
+            @PathVariable("postId") @Min(1) Long postId,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
+    ) {
+        Collection<CommentDTO> commentDTOS = commentService.findAllPostComments(postId, page, size);
+        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
+    }
+
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@Valid @RequestBody CommentDTO commentDTO,
                                                     @PathVariable("commentId") @Min(1) Long commentId) {

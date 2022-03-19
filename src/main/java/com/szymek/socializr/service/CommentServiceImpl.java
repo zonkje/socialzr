@@ -59,6 +59,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
+        List<Comment> commentsList = comments.getContent();
+        return commentsList
+                .stream()
+                .map(commentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CommentDTO create(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
         return commentMapper.toDTO(commentRepository.save(comment));

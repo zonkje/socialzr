@@ -2,7 +2,6 @@ package com.szymek.socializr.controller;
 
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.common.SocialzrConstants;
-import com.szymek.socializr.dto.CommentDTO;
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.dto.PostThumbUpDTO;
 import com.szymek.socializr.service.PostService;
@@ -21,7 +20,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping(path = "/post")
 @RequiredArgsConstructor
-public class PostController {
+public class PostController{
 
     private final PostService postService;
 
@@ -38,16 +37,6 @@ public class PostController {
     ) {
         Collection<PostDTO> postDTOS = postService.findAll(page, size);
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
-    }
-
-    @GetMapping("/comments/{postId}")
-    public ResponseEntity<Collection<CommentDTO>> getAllCommentsByPost(
-            @PathVariable("postId") @Min(1) Long postId,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
-    ) {
-        Collection<CommentDTO> commentDTOS = postService.findAllPostComments(postId, page, size);
-        return new ResponseEntity<>(commentDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/label/id/{labelId}")

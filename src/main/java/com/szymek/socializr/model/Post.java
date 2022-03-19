@@ -6,7 +6,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @Entity
 @SuperBuilder
 @AllArgsConstructor
@@ -18,6 +19,7 @@ import java.util.Collection;
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
 @Table(name = "post")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Post extends TextWidget{
 
 //    @JsonBackReference
