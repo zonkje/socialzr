@@ -59,6 +59,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toDTO(post);
     }
 
+    //TODO: -use @AfterMapping/@BeforeMapping in postMapper instead of saving post twice
     @Override
     public PostDTO create(PostDTO postDTO) {
         Post post = postRepository.save(postMapper.toEntity(postDTO));
@@ -66,6 +67,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toDTO(postRepository.save(post));
     }
 
+    //TODO -move entity updating logic to mappers
     @Override
     public PostDTO update(PostDTO postToUpdate, Long postId) {
         return postRepository

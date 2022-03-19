@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,13 +21,17 @@ public class PostLabelMapperImpl implements PostLabelMapper {
     public Collection<PostLabel> map(List<String> postLabels, Post post) {
         return postLabels
                 .stream()
-                .map(label -> postLabelRepository.save(
-                        PostLabel
-                                .builder()
-                                .name(label)
-                                .post(post)
-                                .build()
-                )
+                .map(label -> {
+                            Optional<PostLabel> optionalPostLabel = postLabelRepository.findPostLabelByName(label);
+                            PostLabel postLabel;
+                            if (optionalPostLabel.isEmpty()) {
+                                postLabel = buildPostLabel(label, post);
+                            } else {
+                                postLabel = optionalPostLabel.get();
+                                postLabel.getPosts().add(post);
+                            }
+                            return postLabelRepository.save(postLabel);
+                        }
                 ).collect(Collectors.toList());
     }
 
@@ -38,5 +43,15 @@ public class PostLabelMapperImpl implements PostLabelMapper {
                         PostLabel::getName
                 )
                 .collect(Collectors.toList());
+    }
+
+    private PostLabel buildPostLabel(String postLabelName, Post post) {
+
+        PostLabel postLabel = PostLabel.builder()
+                .name(postLabelName)
+                .build();
+        postLabel.getPosts().add(post);
+        return postLabel;
+
     }
 }

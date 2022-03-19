@@ -20,6 +20,7 @@ public class BootstrapData implements CommandLineRunner {
     private final ContactInformationRepository contactInformationRepository;
     private final PostThumbUpRepository postThumbUpRepository;
     private final CommentThumbUpRepository commentThumbUpRepository;
+    private final PostLabelRepository postLabelRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -40,6 +41,9 @@ public class BootstrapData implements CommandLineRunner {
         Comment c2 = Comment.builder().text("second comment").author(u1).post(sgp1).commentThumbUps(null).build();
 
         p1.setPostThumbUps(new ArrayList<>());
+        p1.setPostLabels(new ArrayList<>());
+        pl1.setPosts(new ArrayList<>());
+        pl2.setPosts(new ArrayList<>());
         sgp1.setPostThumbUps(new ArrayList<>());
         c1.setCommentThumbUps(new ArrayList<>());
         c2.setCommentThumbUps(new ArrayList<>());
@@ -54,8 +58,8 @@ public class BootstrapData implements CommandLineRunner {
         sgp1.getComments().add(c2);
         p1.getPostLabels().add(pl1);
         p1.getPostLabels().add(pl2);
-        pl1.setPost(p1);
-        pl2.setPost(p1);
+        pl1.getPosts().add(p1);
+        pl2.getPosts().add(p1);
         p1.getPostThumbUps().add(ptu1);
         c1.getCommentThumbUps().add(ctu1);
         u1.setSocialGroups(new ArrayList<>());
@@ -75,5 +79,7 @@ public class BootstrapData implements CommandLineRunner {
         commentThumbUpRepository.save(ctu1);
         postRepository.save(sgp1);
         socialGroupPostRepository.save(sgp1);
+        postLabelRepository.save(pl1);
+        postLabelRepository.save(pl2);
     }
 }

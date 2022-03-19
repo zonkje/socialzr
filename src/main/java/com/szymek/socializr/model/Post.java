@@ -30,11 +30,7 @@ public class Post extends TextWidget{
     )
     private Collection<Comment> comments;
 
-    @OneToMany(
-            mappedBy = "post",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @ManyToMany(mappedBy = "posts")
     private Collection<PostLabel> postLabels;
 
     @OneToMany(
