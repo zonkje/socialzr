@@ -1,7 +1,9 @@
 package com.szymek.socializr.exception;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -90,6 +92,26 @@ public class SocialzrApplicationExceptionHandler {
                         .substring(
                                 exception.getMessage().indexOf(".") + 1
                         )))
+                .httpStatus(status)
+                .httpStatusCode(status.value())
+                .timeStamp(formatter.format(Instant.now()))
+                .build(), status);
+    }
+
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    public ResponseEntity<ApplicationExceptionResponse> handleException(HttpMessageNotReadableException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String message;
+        if(exception.getCause() instanceof UnrecognizedPropertyException) {
+            UnrecognizedPropertyException unrecognizedPropertyException = (UnrecognizedPropertyException) exception.getCause();
+            message = String.format("Unrecognized field: '%s'", unrecognizedPropertyException.getPropertyName());
+        } else {
+            message = exception.getHttpInputMessage().toString();
+        }
+        return new ResponseEntity<>(ApplicationExceptionResponse.builder()
+                .messages(List.of(
+                        message
+                ))
                 .httpStatus(status)
                 .httpStatusCode(status.value())
                 .timeStamp(formatter.format(Instant.now()))
