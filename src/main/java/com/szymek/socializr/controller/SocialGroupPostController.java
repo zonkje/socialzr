@@ -5,6 +5,7 @@ import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.PostThumbUpDTO;
 import com.szymek.socializr.dto.SocialGroupPostDTO;
 import com.szymek.socializr.service.SocialGroupPostService;
+import com.szymek.socializr.validation.ValidId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class SocialGroupPostController {
     private final SocialGroupPostService socialGroupPostService;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<SocialGroupPostDTO> getPost(@PathVariable("postId") @Min(1) Long postId) {
+    public ResponseEntity<SocialGroupPostDTO> getPost(@PathVariable("postId") @Min(1) @ValidId(entity = "SocialGroupPost") Long postId) {
         SocialGroupPostDTO socialGroupPostDTO = socialGroupPostService.findById(postId);
         return new ResponseEntity<>(socialGroupPostDTO, HttpStatus.OK);
     }
@@ -41,7 +42,7 @@ public class SocialGroupPostController {
 
     @GetMapping("/label/id/{labelId}")
     public ResponseEntity<Collection<SocialGroupPostDTO>> getPostsByLabelId(
-            @PathVariable("labelId") @Min(1) Long labelId,
+            @PathVariable("labelId") @Min(1) @ValidId(entity = "PostLabel") Long labelId,
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
     ) {
@@ -61,7 +62,7 @@ public class SocialGroupPostController {
 
     @GetMapping("/social_group/{socialGroupId}")
     public ResponseEntity<Collection<SocialGroupPostDTO>> getPostsBySocialGroupId(
-            @PathVariable("socialGroupId") @Min(1) Long socialGroupId,
+            @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId,
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
     ) {
@@ -77,15 +78,17 @@ public class SocialGroupPostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<SocialGroupPostDTO> updatePost(@Valid @RequestBody SocialGroupPostDTO socialGroupPostDTO,
-                                                         @PathVariable("postId") @Min(1) Long postId) {
+    public ResponseEntity<SocialGroupPostDTO> updatePost(
+            @Valid @RequestBody SocialGroupPostDTO socialGroupPostDTO,
+            @PathVariable("postId") @Min(1) @ValidId(entity = "SocialGroupPost") Long postId) {
         SocialGroupPostDTO updatedSocialGroupPost = socialGroupPostService.update(socialGroupPostDTO, postId);
 
         return new ResponseEntity<>(updatedSocialGroupPost, HttpStatus.OK);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<ApplicationResponse> deletePost(@PathVariable("postId") @Min(1) Long postId) {
+    public ResponseEntity<ApplicationResponse> deletePost(
+            @PathVariable("postId") @Min(1) @ValidId(entity = "SocialGroupPost") Long postId) {
         ApplicationResponse response = socialGroupPostService.deleteById(postId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -100,7 +103,8 @@ public class SocialGroupPostController {
 
     //TODO -change path to /thumb_up/{postId} when security will be configured
     @DeleteMapping("/thumb_up/{thumbUpId}")
-    public ResponseEntity<ApplicationResponse> deletePostThumbUp(@PathVariable("thumbUpId") @Min(1) Long thumbUpId) {
+    public ResponseEntity<ApplicationResponse> deletePostThumbUp(
+            @PathVariable("thumbUpId") @Min(1) @ValidId(entity = "PostThumbUp") Long thumbUpId) {
         ApplicationResponse response = socialGroupPostService.deletePostThumbUpById(thumbUpId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

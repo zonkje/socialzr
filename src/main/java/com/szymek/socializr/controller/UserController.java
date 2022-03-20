@@ -4,6 +4,7 @@ import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.UserService;
+import com.szymek.socializr.validation.ValidId;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable("userId") @Min(1) Long userId) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
         UserDTO userDTO = userService.findById(userId);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -49,31 +50,35 @@ public class UserController {
 
     //TODO: -update, delete
     @PatchMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO,
-                                              @PathVariable("userId") @Min(1) Long userId) {
+    public ResponseEntity<UserDTO> updateUser(
+            @Valid @RequestBody UserDTO userDTO,
+            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
         UserDTO updatedUser = userService.update(userDTO, userId);
 
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApplicationResponse> deleteUser(@PathVariable("userId") @Min(1) Long userId) {
+    public ResponseEntity<ApplicationResponse> deleteUser(
+            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
         ApplicationResponse response = userService.deleteById(userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PatchMapping("/{userId}/join_group/{socialGroupId}")
-    public ResponseEntity<ApplicationResponse> joinSocialGroup(@PathVariable("userId") @Min(1) Long userId,
-                                                               @PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
+    public ResponseEntity<ApplicationResponse> joinSocialGroup(
+            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId,
+            @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId) {
         ApplicationResponse response = userService.joinGroup(userId, socialGroupId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PatchMapping("/{userId}/leave_group/{socialGroupId}")
-    public ResponseEntity<ApplicationResponse> leaveSocialGroup(@PathVariable("userId") @Min(1) Long userId,
-                                                                @PathVariable("socialGroupId") @Min(1) Long socialGroupId) {
+    public ResponseEntity<ApplicationResponse> leaveSocialGroup(
+            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId,
+            @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId) {
         ApplicationResponse response = userService.leaveGroup(userId, socialGroupId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
