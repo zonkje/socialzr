@@ -3,6 +3,8 @@ package com.szymek.socializr.model;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,7 +23,7 @@ import java.util.Collection;
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
 @Table(name = "user")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     @NotBlank(message = "First name cannot be blank")
     @Size(min = 2, message = "First name must be equal or greater than 2 characters")
@@ -31,6 +33,16 @@ public class User extends BaseEntity {
     @NotBlank(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @Cascade(value = {org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -46,6 +58,30 @@ public class User extends BaseEntity {
     @ManyToMany(mappedBy = "members")
     private Collection<SocialGroup> socialGroups;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
 
 

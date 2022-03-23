@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.szymek.socializr.model.Role.USER;
+
 @Component
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
@@ -26,7 +28,8 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null).build();
+        User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null)
+                .username("username").password("password").role(USER).build();
         Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin").zipCode("1211").country("Switzerland").build();
         ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801").address(a1).build();
         PostLabel pl1 = PostLabel.builder().name("SELL").build();
