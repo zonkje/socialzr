@@ -8,7 +8,7 @@ public class SocialzrConstants {
 
     public static final Integer TOKEN_EXPIRATION_TIME_DAYS = 40;
 
-    public static final String JWT_SECRET = "nh7fr59rqpo0smzs";
+    public static final String JWT_SECRET = "nh7fr59rqpo0smzsshwwus72j28s91223ssyqwh21wq8iqw8u3s@#421a";
 
     public static final String TOKEN_PREFIX = "Bearer ";
 }

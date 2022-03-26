@@ -9,6 +9,7 @@ import com.szymek.socializr.validation.ValidId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,14 @@ public class PostController {
 
     private final PostService postService;
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/{postId}")
     public ResponseEntity<PostDTO> getPost(@PathVariable("postId") @Min(1) @ValidId(entity = "Post") Long postId) {
         PostDTO postDTO = postService.findById(postId);
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Collection<PostDTO>> getAllPosts(
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
@@ -40,6 +43,7 @@ public class PostController {
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/label/id/{labelId}")
     public ResponseEntity<Collection<PostDTO>> getPostsByLabelId(
             @PathVariable("labelId") @Min(1) @ValidId(entity = "PostLabel") Long labelId,
@@ -50,6 +54,7 @@ public class PostController {
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/label/name/{labelName}")
     public ResponseEntity<Collection<PostDTO>> getPostsByLabelName(
             @PathVariable("labelName") @Size(min = 2) String labelName,
@@ -60,6 +65,7 @@ public class PostController {
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostDTO postDTO) {
         PostDTO createdPost = postService.create(postDTO);
@@ -67,6 +73,7 @@ public class PostController {
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{postId}")
     public ResponseEntity<PostDTO> updatePost(@Valid @RequestBody PostDTO postDTO,
                                               @PathVariable("postId") @Min(1) @ValidId(entity = "Post") Long postId) {
@@ -75,6 +82,7 @@ public class PostController {
         return new ResponseEntity<>(updatedPost, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApplicationResponse> deletePost(@PathVariable("postId") @Min(1) @ValidId(entity = "Post") Long postId) {
         ApplicationResponse response = postService.deleteById(postId);
@@ -82,6 +90,7 @@ public class PostController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/thumb_up")
     public ResponseEntity<PostThumbUpDTO> addPostThumbUp(@Valid @RequestBody PostThumbUpDTO postThumbUpDTO) {
         PostThumbUpDTO createdPostThumbUpDTO = postService.addThumbUpToPost(postThumbUpDTO);
@@ -90,6 +99,7 @@ public class PostController {
     }
 
     //TODO -change path to /thumb_up/{postId} when security will be configured
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/thumb_up/{thumbUpId}")
     public ResponseEntity<ApplicationResponse> deletePostThumbUp(
             @PathVariable("thumbUpId") @Min(1) @ValidId(entity = "PostThumbUp") Long thumbUpId

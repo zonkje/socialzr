@@ -2,21 +2,16 @@ package com.szymek.socializr.mapper;
 
 import com.szymek.socializr.dto.PostDTO;
 import com.szymek.socializr.model.Post;
-import com.szymek.socializr.model.PostLabel;
 import com.szymek.socializr.model.PostThumbUp;
-import com.szymek.socializr.model.SocialGroup;
-import com.szymek.socializr.repository.PostLabelRepository;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
-import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {PostLabelMapper.class})
-public interface PostMapper extends BeanMapper<Post, PostDTO> {
+public interface PostMapper extends BaseMapper<Post, PostDTO> {
 
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 

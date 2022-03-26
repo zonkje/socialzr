@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.Collection;
 
 @Mapper(componentModel = "spring")
-public interface CommentMapper extends BeanMapper<Comment, CommentDTO> {
+public interface CommentMapper extends BaseMapper<Comment, CommentDTO> {
 
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 

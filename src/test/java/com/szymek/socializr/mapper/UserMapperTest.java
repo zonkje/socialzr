@@ -2,6 +2,7 @@ package com.szymek.socializr.mapper;
 
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.model.User;
+import com.szymek.socializr.security.SignUpRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +25,7 @@ class UserMapperTest {
         userDTO.setContactInformationId(2L);
 
         //when
-        User user = userMapper.toEntity(userDTO);
+        User user = userMapper.toEntity((SignUpRequest) userDTO);
 
         //then
         assertEquals(Long.valueOf(1L), user.getId());

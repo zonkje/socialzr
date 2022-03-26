@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface CommentThumbUpMapper extends BeanMapper<CommentThumbUp, CommentThumbUpDTO> {
+public interface CommentThumbUpMapper extends BaseMapper<CommentThumbUp, CommentThumbUpDTO> {
 
     @Override
     @Mapping(source = "authorId", target = "author.id")

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface PostThumbUpMapper extends BeanMapper<PostThumbUp, PostThumbUpDTO> {
+public interface PostThumbUpMapper extends BaseMapper<PostThumbUp, PostThumbUpDTO> {
 
     @Override
     @Mapping(source = "authorId", target = "author.id")

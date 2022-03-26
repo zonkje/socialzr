@@ -5,8 +5,10 @@ import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.UserService;
 import com.szymek.socializr.validation.ValidId;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +19,12 @@ import java.util.Collection;
 @Validated
 @RestController
 @RequestMapping(path = "/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUser(@PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
         UserDTO userDTO = userService.findById(userId);
@@ -32,6 +32,7 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Collection<UserDTO>> getAllUsers(
             @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
@@ -41,14 +42,7 @@ public class UserController {
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
-        UserDTO createdUser = userService.create(userDTO);
-
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
-
-    //TODO: -update, delete
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(
             @Valid @RequestBody UserDTO userDTO,
@@ -58,6 +52,7 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApplicationResponse> deleteUser(
             @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
@@ -66,6 +61,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{userId}/join_group/{socialGroupId}")
     public ResponseEntity<ApplicationResponse> joinSocialGroup(
             @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId,
@@ -75,6 +71,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{userId}/leave_group/{socialGroupId}")
     public ResponseEntity<ApplicationResponse> leaveSocialGroup(
             @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId,

@@ -1,5 +1,6 @@
 package com.szymek.socializr.security;
 
+import com.szymek.socializr.dto.UserDTO;
 import lombok.*;
 
 @Setter
@@ -7,9 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class SignInRequest {
+public class SignUpRequest extends UserDTO {
 
     private String username;
     private String password;
-
 }

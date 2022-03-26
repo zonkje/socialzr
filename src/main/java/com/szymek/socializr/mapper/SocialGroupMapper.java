@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface SocialGroupMapper extends BeanMapper<SocialGroup, SocialGroupDTO>{
+public interface SocialGroupMapper extends BaseMapper<SocialGroup, SocialGroupDTO> {
 
     SocialGroupMapper INSTANCE = Mappers.getMapper(SocialGroupMapper.class);
 

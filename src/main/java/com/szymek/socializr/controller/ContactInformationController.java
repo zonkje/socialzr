@@ -6,6 +6,7 @@ import com.szymek.socializr.validation.ValidId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class ContactInformationController {
 
     private final ContactInformationService contactInformationService;
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{contactInformationId}")
     public ResponseEntity<ContactInformationDTO> getContactInformation(
             @PathVariable("contactInformationId") @Min(1) @ValidId(entity = "ContactInformation") Long contactInformationId) {
@@ -28,6 +30,7 @@ public class ContactInformationController {
         return new ResponseEntity<>(contactInformationDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public ResponseEntity<ContactInformationDTO> createContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO) {
         ContactInformationDTO createdContactInformation = contactInformationService.create(contactInformationDTO);
@@ -35,6 +38,7 @@ public class ContactInformationController {
         return new ResponseEntity<>(createdContactInformation, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/{contactInformationId}")
     public ResponseEntity<ContactInformationDTO> updateContactInformation(
             @Valid @RequestBody ContactInformationDTO contactInformationDTO,

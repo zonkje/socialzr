@@ -9,6 +9,7 @@ import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.SocialGroupRepository;
 import com.szymek.socializr.repository.UserRepository;
+import com.szymek.socializr.security.SignUpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,8 +57,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO create(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
+    public UserDTO create(SignUpRequest signUpRequest) {
+        User user = userMapper.toEntity(signUpRequest);
         return userMapper.toDTO(userRepository.save(user));
     }
 

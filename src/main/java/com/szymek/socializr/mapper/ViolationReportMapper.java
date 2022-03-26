@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ViolationReportMapper extends BeanMapper<ViolationReport, ViolationReportDTO> {
+public interface ViolationReportMapper extends BaseMapper<ViolationReport, ViolationReportDTO> {
 
     @Override
     @Mapping(source = "authorId", target = "author.id")

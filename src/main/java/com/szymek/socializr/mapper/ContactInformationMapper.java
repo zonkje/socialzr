@@ -3,11 +3,10 @@ package com.szymek.socializr.mapper;
 import com.szymek.socializr.dto.ContactInformationDTO;
 import com.szymek.socializr.model.ContactInformation;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface ContactInformationMapper extends BeanMapper<ContactInformation, ContactInformationDTO>{
+public interface ContactInformationMapper extends BaseMapper<ContactInformation, ContactInformationDTO> {
 
     ContactInformationMapper INSTANCE = Mappers.getMapper(ContactInformationMapper.class);
 
