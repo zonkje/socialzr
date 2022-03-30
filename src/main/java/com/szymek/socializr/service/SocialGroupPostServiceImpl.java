@@ -8,8 +8,7 @@ import com.szymek.socializr.exception.ThumbUpException;
 import com.szymek.socializr.mapper.PostLabelMapper;
 import com.szymek.socializr.mapper.PostThumbUpMapper;
 import com.szymek.socializr.mapper.SocialGroupPostMapper;
-import com.szymek.socializr.model.PostThumbUp;
-import com.szymek.socializr.model.SocialGroupPost;
+import com.szymek.socializr.model.*;
 import com.szymek.socializr.repository.PostThumbUpRepository;
 import com.szymek.socializr.repository.SocialGroupPostRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +28,20 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SocialGroupPostServiceImpl implements SocialGroupPostService{
+public class SocialGroupPostServiceImpl implements SocialGroupPostService {
 
     private final SocialGroupPostRepository socialGroupPostRepository;
     private final SocialGroupPostMapper socialGroupPostMapper;
     private final PostLabelMapper postLabelMapper;
     private final PostThumbUpRepository postThumbUpRepository;
     private final PostThumbUpMapper postThumbUpMapper;
+    private final UserService userService;
+    private final SocialGroupService socialGroupService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
 
     //TODO: -a lot of redundant code, consider optimization
-
     @Override
     public Collection<SocialGroupPostDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
@@ -55,21 +55,23 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService{
 
     @Override
     public SocialGroupPostDTO findById(Long socialGroupPostId) {
-        SocialGroupPost socialGroupPost = socialGroupPostRepository
-                .findById(socialGroupPostId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", socialGroupPostId));
+        SocialGroupPost socialGroupPost = findSocialGroupPostById(socialGroupPostId);
         return socialGroupPostMapper.toDTO(socialGroupPost);
     }
 
     @Override
-    public SocialGroupPostDTO create(SocialGroupPostDTO socialGroupPostDTO) {
+    public SocialGroupPostDTO create(SocialGroupPostDTO socialGroupPostDTO, String authorName) {
+        socialGroupPostDTO.setAuthorId(userService.findByUsername(authorName).getId());
         SocialGroupPost socialGroupPost = socialGroupPostRepository.save(socialGroupPostMapper.toEntity(socialGroupPostDTO));
         socialGroupPost.setPostLabels(postLabelMapper.map(socialGroupPostDTO.getPostLabels(), socialGroupPost));
         return socialGroupPostMapper.toDTO(socialGroupPostRepository.save(socialGroupPost));
     }
 
     @Override
-    public SocialGroupPostDTO update(SocialGroupPostDTO socialGroupPostToUpdate, Long socialGroupPostId) {
+    public SocialGroupPostDTO update(SocialGroupPostDTO socialGroupPostToUpdate, String loggedUserName) {
+        userService.checkPermission(socialGroupPostToUpdate.getAuthorId(), loggedUserName, "edit",
+                "social group post");
+        Long socialGroupPostId = socialGroupPostToUpdate.getId();
         return socialGroupPostRepository
                 .findById(socialGroupPostId)
                 .map(socialGroupPost -> {
@@ -82,14 +84,12 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService{
     }
 
     @Override
-    public ApplicationResponse deleteById(Long socialGroupPostId) {
-        String message;
-        if (socialGroupPostRepository.findById(socialGroupPostId).isPresent()) {
-            message = String.format("Post with ID: %s has been deleted", socialGroupPostId);
+    public ApplicationResponse deleteById(Long socialGroupPostId, String loggedUserName) {
+        SocialGroupPost socialGroupPost = findSocialGroupPostById(socialGroupPostId);
+        userService.checkPermission(socialGroupPost.getAuthor().getId(), loggedUserName, "delete",
+                "social group post");
+        String message = String.format("Post with ID: %s has been deleted", socialGroupPostId);
             socialGroupPostRepository.deleteById(socialGroupPostId);
-        } else {
-            message = String.format("Post with ID: %s doesn't exist", socialGroupPostId);
-        }
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -98,32 +98,48 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService{
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllByLabelId(Long labelId, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllByLabelId(Long labelId, String loggedUserName, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsByPostLabelsId(labelId, pageable);
         List<SocialGroupPost> socialGroupPostList = socialGroupPosts.getContent();
+        User user = userService.findUserByUsername(loggedUserName);
+
         return socialGroupPostList
                 .stream()
+                .filter( socialGroupPost -> {
+                    SocialGroup socialGroup = socialGroupPost.getSocialGroup();
+                    return (user.getRole().equals(Role.ADMIN) || socialGroup.getAccessLevel().equals(AccessLevel.PUBLIC)
+                    || user.getSocialGroups().contains(socialGroup));
+                })
                 .map(socialGroupPostMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllByLabelName(String labelName, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllByLabelName(String labelName, String loggedUserName, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsByPostLabelsName(labelName, pageable);
         List<SocialGroupPost> socialGroupPostList = socialGroupPosts.getContent();
+        User user = userService.findUserByUsername(loggedUserName);
+
         return socialGroupPostList
                 .stream()
+                .filter( socialGroupPost -> {
+                    SocialGroup socialGroup = socialGroupPost.getSocialGroup();
+                    return (user.getRole().equals(Role.ADMIN) || socialGroup.getAccessLevel().equals(AccessLevel.PUBLIC)
+                            || user.getSocialGroups().contains(socialGroup));
+                })
                 .map(socialGroupPostMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllBySocialGroupId(Long socialGroupId, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllBySocialGroupId(Long socialGroupId, String loggedUserName, Integer page, Integer size) {
+        socialGroupService.checkSocialGroupPermission(socialGroupId, loggedUserName);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsBySocialGroupId(socialGroupId, pageable);
         List<SocialGroupPost> socialGroupPostList = socialGroupPosts.getContent();
+
         return socialGroupPostList
                 .stream()
                 .map(socialGroupPostMapper::toDTO)
@@ -131,17 +147,17 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService{
     }
 
     @Override
-    public PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUpDTO) {
-        Long postId = postThumbUpDTO.getPostId();
-        SocialGroupPost socialGroupPost = socialGroupPostRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+    public PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUpDTO, String authorName) {
+        SocialGroupPost socialGroupPost = findSocialGroupPostById(postThumbUpDTO.getPostId());
+        socialGroupService.checkSocialGroupPermission(socialGroupPost.getSocialGroup().getId(), authorName);
 
         boolean isAlreadyThumbUpByUser = socialGroupPost.getPostThumbUps().stream()
                 .anyMatch(
                         postThumbUp -> postThumbUp.getAuthor().getId().equals(postThumbUpDTO.getAuthorId())
                 );
 
-        if(!isAlreadyThumbUpByUser){
+        if (!isAlreadyThumbUpByUser) {
+            postThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
             PostThumbUp postThumbUp = postThumbUpMapper.toEntity(postThumbUpDTO);
             return postThumbUpMapper.toDTO(postThumbUpRepository.save(postThumbUp));
         } else {
@@ -149,22 +165,26 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService{
         }
 
     }
-    //TODO -change it when security will be configured
 
     @Override
-    public ApplicationResponse deletePostThumbUpById(Long thumbUpId) {
-        String message;
-        if (postThumbUpRepository.findById(thumbUpId).isPresent()) {
-            message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
+    public ApplicationResponse deletePostThumbUpById(Long thumbUpId, String loggedUserName) {
+        PostThumbUp postThumbUpToDelete = postThumbUpRepository.findById(thumbUpId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post Thumb Up", "ID", thumbUpId));
+        userService.checkPermission(postThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
+                "post thumb up");
+        String message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
             postThumbUpRepository.deleteById(thumbUpId);
-        } else {
-            message = String.format("Post Thumb Up with ID: %s doesn't exist", thumbUpId);
-        }
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
                 .timeStamp(formatter.format(Instant.now()))
                 .build();
+    }
+
+    private SocialGroupPost findSocialGroupPostById(Long socialGroupPostId){
+        return socialGroupPostRepository
+                .findById(socialGroupPostId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", socialGroupPostId));
     }
 
 }

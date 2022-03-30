@@ -6,7 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SocialGroupRepository extends JpaRepository<SocialGroup, Long> {
-
-//    Collection<SocialGroup> findAll();
-
 }

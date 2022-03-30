@@ -34,11 +34,11 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final CommentThumbUpMapper commentThumbUpMapper;
     private final CommentThumbUpRepository commentThumbUpRepository;
+    private final UserService userService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
 
-    //TODO -remove useless methods
     @Override
     public Collection<CommentDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
@@ -51,10 +51,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Collection<CommentDTO> findAllByUser(String username, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Comment> comments = commentRepository.findCommentsByAuthorUsername(username, pageable);
+        List<Comment> commentsList = comments.getContent();
+        return commentsList
+                .stream()
+                .map(commentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public CommentDTO findById(Long commentId) {
-        Comment comment = commentRepository
-                .findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
+        Comment comment = findCommentById(commentId);
         return commentMapper.toDTO(comment);
     }
 
@@ -70,20 +79,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO create(CommentDTO commentDTO) {
+    public CommentDTO create(CommentDTO commentDTO, String authorName) {
+        commentDTO.setAuthorId(userService.findByUsername(authorName).getId());
         Comment comment = commentMapper.toEntity(commentDTO);
         return commentMapper.toDTO(commentRepository.save(comment));
     }
 
     @Override
-    public ApplicationResponse deleteById(Long commentId) {
-        String message;
-        if (commentRepository.findById(commentId).isPresent()) {
-            message = String.format("Comment with ID: %s has been deleted", commentId);
-            commentRepository.deleteById(commentId);
-        } else {
-            message = String.format("Comment with ID: %s doesn't exist", commentId);
-        }
+    public ApplicationResponse deleteById(Long commentId, String loggedUserName) {
+        Comment commentToDelete = findCommentById(commentId);
+        userService.checkPermission(commentToDelete.getAuthor().getId(), loggedUserName, "delete",
+                "comment");
+        String message = String.format("Comment with ID: %s has been deleted", commentId);
+        commentRepository.deleteById(commentId);
+
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -92,8 +101,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO update(CommentDTO commentToUpdate, Long commentId) {
-        return commentRepository
+    public CommentDTO update(CommentDTO commentToUpdate, String loggedUserName) {
+        userService.checkPermission(commentToUpdate.getAuthorId(), loggedUserName, "edit", "comment");
+        Long commentId = commentToUpdate.getId();
+        return commentRepository    //replace with private method
                 .findById(commentId)
                 .map(comment -> {
                             if (comment.getText() != null) {
@@ -105,7 +116,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO) {
+    public CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO, String authorName) {
         Long commentId = commentThumbUpDTO.getCommentId();
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
@@ -115,27 +126,35 @@ public class CommentServiceImpl implements CommentService {
                         commentThumbUp -> commentThumbUp.getAuthor().getId().equals(commentThumbUpDTO.getAuthorId())
                 );
 
-        if(!isAlreadyThumbUpByUser){
-            CommentThumbUp postThumbUp = commentThumbUpMapper.toEntity(commentThumbUpDTO);
-            return commentThumbUpMapper.toDTO(commentThumbUpRepository.save(postThumbUp));
+        if (!isAlreadyThumbUpByUser) {
+            commentThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
+            CommentThumbUp commentThumbUp = commentThumbUpMapper.toEntity(commentThumbUpDTO);
+            return commentThumbUpMapper.toDTO(commentThumbUpRepository.save(commentThumbUp));
         } else {
             throw new ThumbUpException(commentThumbUpDTO.getCommentId(), commentThumbUpDTO.getAuthorId());
         }
     }
 
     @Override
-    public ApplicationResponse deleteCommentThumbUpById(Long thumbUpId) {
-        String message;
-        if (commentThumbUpRepository.findById(thumbUpId).isPresent()) {
-            message = String.format("Comment Thumb Up with ID: %s has been deleted", thumbUpId);
-            commentThumbUpRepository.deleteById(thumbUpId);
-        } else {
-            message = String.format("Comment Thumb Up with ID: %s doesn't exist", thumbUpId);
-        }
+    public ApplicationResponse deleteCommentThumbUpById(Long thumbUpId, String loggedUserName) {
+        CommentThumbUp commentThumbUpToDelete = commentThumbUpRepository.findById(thumbUpId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment Thumb Up", "ID", thumbUpId));
+        userService.checkPermission(commentThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
+                "comment thumb up");
+        String message = String.format("Comment Thumb Up with ID: %s has been deleted", thumbUpId);
+        commentThumbUpRepository.deleteById(thumbUpId);
+
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
                 .timeStamp(formatter.format(Instant.now()))
                 .build();
     }
+
+    private Comment findCommentById(Long commentId) {
+        return commentRepository
+                .findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
+    }
+
 }

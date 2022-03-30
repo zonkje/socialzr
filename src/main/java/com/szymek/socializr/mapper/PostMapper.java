@@ -32,18 +32,4 @@ public interface PostMapper extends BaseMapper<Post, PostDTO> {
         if(postThumbUps == null) return 0;
         return postThumbUps.size();
     }
-
-//    Collection<PostLabel> map(List<String> value);
-//
-//    List<String> map(Collection<PostLabel> value);
-//
-//    default PostLabel map(String value){
-//
-//        return PostLabel.builder().name(value).build();
-//    }
-//
-//    default String map(PostLabel value) {
-//
-//        return value.getName();
-//    }
 }

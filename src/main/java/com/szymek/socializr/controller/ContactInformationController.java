@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.security.Principal;
 
 @Validated
 @RestController
@@ -26,25 +27,27 @@ public class ContactInformationController {
     public ResponseEntity<ContactInformationDTO> getContactInformation(
             @PathVariable("contactInformationId") @Min(1) @ValidId(entity = "ContactInformation") Long contactInformationId) {
         ContactInformationDTO contactInformationDTO = contactInformationService.findById(contactInformationId);
-
         return new ResponseEntity<>(contactInformationDTO, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<ContactInformationDTO> createContactInformation(@Valid @RequestBody ContactInformationDTO contactInformationDTO) {
-        ContactInformationDTO createdContactInformation = contactInformationService.create(contactInformationDTO);
-
+    public ResponseEntity<ContactInformationDTO> createContactInformation(
+            @Valid @RequestBody ContactInformationDTO contactInformationDTO,
+            Principal principal) {
+        ContactInformationDTO createdContactInformation = contactInformationService
+                .create(contactInformationDTO, principal.getName());
         return new ResponseEntity<>(createdContactInformation, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/{contactInformationId}")
+    @PatchMapping
     public ResponseEntity<ContactInformationDTO> updateContactInformation(
             @Valid @RequestBody ContactInformationDTO contactInformationDTO,
-            @PathVariable("contactInformationId") @Min(1) @ValidId(entity = "ContactInformation") Long contactInformationId) {
-        ContactInformationDTO updatedContactInformation = contactInformationService.update(contactInformationDTO, contactInformationId);
-
+            Principal principal
+    ) {
+        ContactInformationDTO updatedContactInformation = contactInformationService.update(contactInformationDTO,
+                principal.getName());
         return new ResponseEntity<>(updatedContactInformation, HttpStatus.OK);
     }
 }

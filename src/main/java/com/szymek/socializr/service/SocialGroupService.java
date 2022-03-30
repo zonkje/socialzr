@@ -1,12 +1,11 @@
 package com.szymek.socializr.service;
 
 import com.szymek.socializr.dto.SocialGroupDTO;
-import com.szymek.socializr.dto.UserDTO;
-
-import java.util.Collection;
+import com.szymek.socializr.model.SocialGroup;
 
 public interface SocialGroupService extends CrudService<SocialGroupDTO, Long> {
 
-    Collection<UserDTO> findAllMembers(Long socialGroupId, Integer page, Integer size);
+    void checkSocialGroupPermission(Long socialGroupId, String username);
 
+    SocialGroup findSocialGroupById(Long socialGroupId);
 }

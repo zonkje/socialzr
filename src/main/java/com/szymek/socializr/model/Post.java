@@ -14,15 +14,10 @@ import java.util.Collection;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-//@EqualsAndHashCode(exclude = {"author"})
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
 @Table(name = "post")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Post extends TextWidget{
 
-//    @JsonBackReference
     @OneToMany(
             mappedBy = "post",
             cascade = CascadeType.ALL,

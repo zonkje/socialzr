@@ -14,7 +14,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-//@EqualsAndHashCode(exclude = {"post", "author"})
 @Table(name = "comment")
 public class Comment extends TextWidget{
 

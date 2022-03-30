@@ -5,7 +5,9 @@ import com.szymek.socializr.dto.ContactInformationDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.ContactInformationMapper;
 import com.szymek.socializr.model.ContactInformation;
+import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.ContactInformationRepository;
+import com.szymek.socializr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ public class ContactInformationServiceImpl implements ContactInformationService 
 
     private final ContactInformationRepository contactInformationRepository;
     private final ContactInformationMapper contactInformationMapper;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -41,13 +45,18 @@ public class ContactInformationServiceImpl implements ContactInformationService 
     }
 
     @Override
-    public ContactInformationDTO create(ContactInformationDTO contactInformationDTO) {
+    public ContactInformationDTO create(ContactInformationDTO contactInformationDTO, String authorName) {
+        User user = userRepository.findByUsername(authorName)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", authorName));
         ContactInformation contactInformation = contactInformationMapper.toEntity(contactInformationDTO);
-        return contactInformationMapper.toDTO(contactInformationRepository.save(contactInformation));
+        contactInformationRepository.save(contactInformation);
+        user.setContactInformation(contactInformation);
+        userRepository.save(user);
+        return contactInformationMapper.toDTO(contactInformation);
     }
 
     @Override
-    public ApplicationResponse deleteById(Long contactInformationId) {
+    public ApplicationResponse deleteById(Long contactInformationId, String loggedUserName) {
         String message;
         if (contactInformationRepository.findById(contactInformationId).isPresent()) {
             message = String.format("Contact information with ID: %s has been deleted", contactInformationId);
@@ -62,8 +71,12 @@ public class ContactInformationServiceImpl implements ContactInformationService 
                 .build();
     }
 
+    //bidirectional binding will make it much simpler
     @Override
-    public ContactInformationDTO update(ContactInformationDTO contactInformationToUpdate, Long contactInformationId) {
+    public ContactInformationDTO update(ContactInformationDTO contactInformationToUpdate, String loggedUserName) {
+        userService.checkPermission(contactInformationToUpdate.getId(), loggedUserName, "edit",
+                "contact information");
+        Long contactInformationId = contactInformationToUpdate.getId();
         return contactInformationRepository
                 .findById(contactInformationId)
                 .map(contactInformation -> {
@@ -72,6 +85,9 @@ public class ContactInformationServiceImpl implements ContactInformationService 
                             }
                             if (contactInformation.getPhoneNumber() != null) {
                                 contactInformation.setPhoneNumber(contactInformationToUpdate.getPhoneNumber());
+                            }
+                            if (contactInformation.getWebsitesURLs() != null) {
+                                contactInformation.setWebsitesURLs(contactInformationToUpdate.getWebsitesURLs());
                             }
                             if (contactInformation.getAddress().getAddress() != null) {
                                 contactInformation.getAddress().setAddress(contactInformationToUpdate.getAddress().getAddress());

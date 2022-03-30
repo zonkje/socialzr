@@ -8,9 +8,11 @@ import java.util.Collection;
 
 public interface CommentService extends CrudService<CommentDTO, Long>{
 
-    CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO);
+    CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO, String authorName);
 
-    ApplicationResponse deleteCommentThumbUpById(Long thumbUpId);
+    ApplicationResponse deleteCommentThumbUpById(Long thumbUpId, String loggedUserName);
 
     Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size);
+
+    Collection<CommentDTO> findAllByUser(String username, Integer page, Integer size);
 }

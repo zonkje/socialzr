@@ -19,10 +19,10 @@ import java.util.Collection;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id")
-@Table(name = "user")
+    //TODO -got exceptions after add UNIQUE constraint to column 'username'
+@Table(name = "user"
+//        ,uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})}
+)
 public class User extends BaseEntity implements UserDetails {
 
     @NotBlank(message = "First name cannot be blank")
@@ -44,12 +44,14 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "avatarUrl")
+    private String avatarUrl;
+
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
-    @Cascade(value = {org.hibernate.annotations.CascadeType.DETACH,org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.DETACH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JoinColumn(name = "contact_information_id")
     private ContactInformation contactInformation;
 
-    //    @JsonManagedReference
     @OneToMany(
             mappedBy = "author",
             cascade = CascadeType.ALL)

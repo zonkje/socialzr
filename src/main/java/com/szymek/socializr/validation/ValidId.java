@@ -10,12 +10,14 @@ import java.lang.annotation.Target;
 
 @Constraint(validatedBy = IdValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Positive
 public @interface ValidId {
 
     public String message() default "object ID not found";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
     String entity();

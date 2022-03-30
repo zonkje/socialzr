@@ -2,16 +2,17 @@ package com.szymek.socializr.service;
 
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.SocialGroupDTO;
-import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
+import com.szymek.socializr.exception.UnauthorizedException;
 import com.szymek.socializr.mapper.SocialGroupMapper;
-import com.szymek.socializr.mapper.UserMapper;
 import com.szymek.socializr.model.AccessLevel;
+import com.szymek.socializr.model.Role;
 import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.SocialGroupRepository;
-import com.szymek.socializr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,13 +28,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class SocialGroupServiceImpl implements SocialGroupService {
 
     private final SocialGroupRepository socialGroupRepository;
     private final SocialGroupMapper socialGroupMapper;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserService userService;
+
+    @Autowired
+    public SocialGroupServiceImpl(SocialGroupRepository socialGroupRepository, SocialGroupMapper socialGroupMapper, @Lazy UserService userService) {
+        this.socialGroupRepository = socialGroupRepository;
+        this.socialGroupMapper = socialGroupMapper;
+        this.userService = userService;
+    }
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -51,27 +57,24 @@ public class SocialGroupServiceImpl implements SocialGroupService {
 
     @Override
     public SocialGroupDTO findById(Long socialGroupId) {
-        SocialGroup socialGroup = socialGroupRepository
-                .findById(socialGroupId)
-                .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
+        SocialGroup socialGroup = findSocialGroupById(socialGroupId);
         return socialGroupMapper.toDTO(socialGroup);
     }
 
     @Override
-    public SocialGroupDTO create(SocialGroupDTO socialGroupDTO) {
+    public SocialGroupDTO create(SocialGroupDTO socialGroupDTO, String authorName) {
+        socialGroupDTO.setCreatorId(userService.findByUsername(authorName).getId());
         SocialGroup socialGroup = socialGroupMapper.toEntity(socialGroupDTO);
         return socialGroupMapper.toDTO(socialGroupRepository.save(socialGroup));
     }
 
     @Override
-    public ApplicationResponse deleteById(Long socialGroupId) {
-        String message;
-        if (socialGroupRepository.findById(socialGroupId).isPresent()) {
-            message = String.format("Social group with ID: %s has been deleted", socialGroupId);
-            socialGroupRepository.deleteById(socialGroupId);
-        } else {
-            message = String.format("Social group with ID: %s doesn't exist", socialGroupId);
-        }
+    public ApplicationResponse deleteById(Long socialGroupId, String loggedUserName) {
+        SocialGroup socialGroup = findSocialGroupById(socialGroupId);
+        userService.checkPermission(socialGroup.getCreator().getId(), loggedUserName, "delete", "social group");
+        String message = String.format("Social group with ID: %s has been deleted", socialGroupId);
+        socialGroupRepository.deleteById(socialGroupId);
+
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -80,7 +83,9 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     }
 
     @Override
-    public SocialGroupDTO update(SocialGroupDTO socialGroupToUpdate, Long socialGroupId) {
+    public SocialGroupDTO update(SocialGroupDTO socialGroupToUpdate, String loggedUserName) {
+        userService.checkPermission(socialGroupToUpdate.getCreatorId(), loggedUserName, "edit", "social group");
+        Long socialGroupId = socialGroupToUpdate.getId();
         return socialGroupRepository
                 .findById(socialGroupId)
                 .map(socialGroup -> {
@@ -103,17 +108,18 @@ public class SocialGroupServiceImpl implements SocialGroupService {
                 ).orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
     }
 
-    @Override
-    public Collection<UserDTO> findAllMembers(Long socialGroupId, Integer page, Integer size) {
-        SocialGroup socialGroup = socialGroupRepository
+    public SocialGroup findSocialGroupById(Long socialGroupId) {
+        return socialGroupRepository
                 .findById(socialGroupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
-        Page<User> socialGroupMembers = userRepository.findUsersBySocialGroups(socialGroup, pageable);
-        List<User> socialGroupMembersList = socialGroupMembers.getContent();
-        return socialGroupMembersList
-                .stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
+    }
+
+    public void checkSocialGroupPermission(Long socialGroupId, String username) {
+        SocialGroup socialGroup = findSocialGroupById(socialGroupId);
+        User user = userService.findUserByUsername(username);
+        if (socialGroup.getAccessLevel().equals(AccessLevel.PRIVATE) && !user.getRole().equals(Role.ADMIN) &&
+                !socialGroup.getMembers().contains(user)) {
+            throw new UnauthorizedException("view members of", "social group");
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.szymek.socializr.dto;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,6 +20,8 @@ public class SocialGroupDTO extends BaseEntityDTO {
 
     @NotBlank(message = "Group description cannot be blank")
     private String description;
+
+    private String avatarUrl;
 
     @NotNull
     private Long creatorId;

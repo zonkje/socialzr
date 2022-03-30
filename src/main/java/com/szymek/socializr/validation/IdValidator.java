@@ -21,6 +21,7 @@ public class IdValidator implements ConstraintValidator<ValidId, Long> {
     private final ContactInformationRepository contactInformationRepository;
     private final SocialGroupRepository socialGroupRepository;
     private final UserRepository userRepository;
+    private final SocialGroupPostRepository socialGroupPostRepository;
 
     @Override
     public void initialize(ValidId constraintAnnotation) {
@@ -46,6 +47,7 @@ public class IdValidator implements ConstraintValidator<ValidId, Long> {
             case "ContactInformation" -> contactInformationRepository.existsById(id);
             case "SocialGroup" -> socialGroupRepository.existsById(id);
             case "User" -> userRepository.existsById(id);
+            case "SocialGroupPost" -> socialGroupPostRepository.existsById(id);
             default -> false;
         };
 

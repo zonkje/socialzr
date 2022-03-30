@@ -101,14 +101,14 @@ class PostServiceImplTest {
 
         when(postRepository.save(any())).thenReturn(post);
 
-        PostDTO savedPost = postService.create(postDTOToSave);
+        PostDTO savedPost = postService.create(postDTOToSave, anyString());
 
         assertNotNull(savedPost);
     }
 
     @Test
     void deleteById() {
-        postService.deleteById(1L);
+        postService.deleteById(1L, anyString());
 
         verify(postRepository).deleteById(anyLong());
     }

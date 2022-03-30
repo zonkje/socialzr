@@ -15,7 +15,6 @@ public abstract class TextWidgetDTO extends BaseEntityDTO{
     @NotBlank(message = "Text cannot be blank")
     private String text;
 
-    @NotNull(message = "Author ID cannot be null")   //TODO -provide this in the future using Principals
     private Long authorId;
 
 }

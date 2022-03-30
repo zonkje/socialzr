@@ -15,7 +15,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-//@EqualsAndHashCode(exclude = {"members", "creator"})
 @Table(name = "social_group")
 public class SocialGroup extends BaseEntity {
 
@@ -27,6 +26,9 @@ public class SocialGroup extends BaseEntity {
     @NotBlank(message = "Group description cannot be blank")
     @Column(name = "description")
     private String description;
+
+    @Column(name = "avatarUrl")
+    private String avatarUrl;
 
     @NotNull
     @OneToOne

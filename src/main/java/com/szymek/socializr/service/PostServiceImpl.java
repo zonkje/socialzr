@@ -36,6 +36,7 @@ public class PostServiceImpl implements PostService {
     private final PostLabelMapper postLabelMapper;
     private final PostThumbUpRepository postThumbUpRepository;
     private final PostThumbUpMapper postThumbUpMapper;
+    private final UserService userService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
@@ -52,24 +53,36 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Collection<PostDTO> findAllByAuthor(Long authorId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Page<Post> posts = postRepository.findPostsByAuthorId(authorId, pageable);
+        List<Post> postsList = posts.getContent();
+        return postsList
+                .stream()
+                .map(postMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PostDTO findById(Long postId) {
-        Post post = postRepository
-                .findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+        Post post = findPostById(postId);
         return postMapper.toDTO(post);
     }
 
     //TODO: -use @AfterMapping/@BeforeMapping in postMapper instead of saving post twice
     @Override
-    public PostDTO create(PostDTO postDTO) {
+    public PostDTO create(PostDTO postDTO, String authorName) {
+        postDTO.setAuthorId(userService.findByUsername(authorName).getId());
         Post post = postRepository.save(postMapper.toEntity(postDTO));
         post.setPostLabels(postLabelMapper.map(postDTO.getPostLabels(), post));
         return postMapper.toDTO(postRepository.save(post));
     }
 
-    //TODO -move entity updating logic to mappers
+    //TODO: -move entity updating logic to mappers
     @Override
-    public PostDTO update(PostDTO postToUpdate, Long postId) {
+    public PostDTO update(PostDTO postToUpdate, String loggedUserName) {
+        userService.checkPermission(postToUpdate.getAuthorId(), loggedUserName, "edit", "post");
+        Long postId = postToUpdate.getId();
         return postRepository
                 .findById(postId)
                 .map(post -> {
@@ -82,14 +95,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApplicationResponse deleteById(Long postId) {
-        String message;
-        if (postRepository.findById(postId).isPresent()) {
-            message = String.format("Post with ID: %s has been deleted", postId);
-            postRepository.deleteById(postId);
-        } else {
-            message = String.format("Post with ID: %s doesn't exist", postId);
-        }
+    public ApplicationResponse deleteById(Long postId, String loggedUserName) {
+        Post postToDelete = findPostById(postId);
+        userService.checkPermission(postToDelete.getAuthor().getId(), loggedUserName, "delete",
+                "post");
+        String message = String.format("Post with ID: %s has been deleted", postId);
+        postRepository.deleteById(postId);
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -120,7 +131,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUpDTO) {
+    public PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUpDTO, String authorName) {
         Long postId = postThumbUpDTO.getPostId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
@@ -130,7 +141,8 @@ public class PostServiceImpl implements PostService {
                         postThumbUp -> postThumbUp.getAuthor().getId().equals(postThumbUpDTO.getAuthorId())
                 );
 
-        if(!isAlreadyThumbUpByUser){
+        if (!isAlreadyThumbUpByUser) {
+            postThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
             PostThumbUp postThumbUp = postThumbUpMapper.toEntity(postThumbUpDTO);
             return postThumbUpMapper.toDTO(postThumbUpRepository.save(postThumbUp));
         } else {
@@ -139,20 +151,26 @@ public class PostServiceImpl implements PostService {
 
     }
 
-    //TODO -change it when security will be configured
     @Override
-    public ApplicationResponse deletePostThumbUpById(Long thumbUpId) {
-        String message;
-        if (postThumbUpRepository.findById(thumbUpId).isPresent()) {
-            message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
-            postThumbUpRepository.deleteById(thumbUpId);
-        } else {
-            message = String.format("Post Thumb Up with ID: %s doesn't exist", thumbUpId);
-        }
+    public ApplicationResponse deletePostThumbUpById(Long thumbUpId, String loggedUserName) {
+        PostThumbUp postThumbUpToDelete = postThumbUpRepository.findById(thumbUpId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post Thumb Up", "ID", thumbUpId));
+        userService.checkPermission(postThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
+                "post thumb up");
+        String message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
+        postThumbUpRepository.deleteById(thumbUpId);
+
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
                 .timeStamp(formatter.format(Instant.now()))
                 .build();
     }
+
+    private Post findPostById(Long postId) {
+        return postRepository
+                .findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+    }
+
 }

@@ -11,6 +11,7 @@ CREATE USER 'socialzr_dev_user'@'%' IDENTIFIED BY 'szymek';
 -- # Database grants
 -- GRANT ALL ON socialzr_dev.* TO 'socialzr_dev_user'@'%';
 -- GRANT ALL ON socialzr_dev.* TO 'socialzr_dev_user'@'localhost';
+
 GRANT SELECT ON socialzr_dev.* TO 'socialzr_dev_user'@'localhost';
 GRANT INSERT ON socialzr_dev.* TO 'socialzr_dev_user'@'localhost';
 GRANT DELETE ON socialzr_dev.* TO 'socialzr_dev_user'@'localhost';

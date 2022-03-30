@@ -19,6 +19,8 @@ public class UserDTO extends BaseEntityDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
+    private String avatarUrl;
+
     private Long contactInformationId;
 
 }

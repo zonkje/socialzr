@@ -6,5 +6,3 @@ public interface BaseMapper<T1, T2> {
     T2 toDTO(T1 entity);
 
 }
-
-//TODO -name of this class didn't fit

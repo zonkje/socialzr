@@ -4,9 +4,7 @@ import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.dto.ViolationReportDTO;
 import com.szymek.socializr.exception.ResourceNotFoundException;
 import com.szymek.socializr.mapper.ViolationReportMapper;
-import com.szymek.socializr.model.Post;
 import com.szymek.socializr.model.ViolationReport;
-import com.szymek.socializr.repository.UserRepository;
 import com.szymek.socializr.repository.ViolationReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,16 +27,17 @@ public class ViolationReportServiceImpl implements ViolationReportService {
 
     private final ViolationReportRepository violationReportRepository;
     private final ViolationReportMapper violationReportMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
             .withZone(ZoneId.systemDefault());
 
     @Override
-    public ApplicationResponse reportUser(ViolationReportDTO violationReportDTO) {
-        if (userRepository.findById(violationReportDTO.getReportedUserId()).isEmpty()) {
+    public ApplicationResponse reportUser(ViolationReportDTO violationReportDTO, String authorName) {
+        if (userService.findById(violationReportDTO.getReportedUserId()) == null) {
             throw new ResourceNotFoundException("User", "ID", violationReportDTO.getReportedUserId());
         } else {
+            violationReportDTO.setAuthorId(userService.findByUsername(authorName).getId());
             violationReportRepository.save(violationReportMapper.toEntity(violationReportDTO));
 
             return ApplicationResponse

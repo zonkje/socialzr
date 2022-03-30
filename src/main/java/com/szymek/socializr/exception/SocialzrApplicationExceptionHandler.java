@@ -66,6 +66,17 @@ public class SocialzrApplicationExceptionHandler {
                 .build(), status);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApplicationExceptionResponse> handleException(UnauthorizedException exception) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        return new ResponseEntity<>(ApplicationExceptionResponse.builder()
+                .messages(List.of(exception.getMessage()))
+                .httpStatus(status)
+                .httpStatusCode(status.value())
+                .timeStamp(formatter.format(Instant.now()))
+                .build(), status);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApplicationExceptionResponse> handleException(MethodArgumentNotValidException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;

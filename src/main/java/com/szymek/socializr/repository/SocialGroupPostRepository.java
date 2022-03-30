@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 public interface SocialGroupPostRepository extends JpaRepository<SocialGroupPost, Long> {
 
     Page<SocialGroupPost> findSocialGroupPostsByPostLabelsId(Long postLabelId, Pageable pageable);
+
     Page<SocialGroupPost> findSocialGroupPostsByPostLabelsName(String postLabelName, Pageable pageable);
+
     Page<SocialGroupPost> findSocialGroupPostsBySocialGroupId(Long socialGroupId, Pageable pageable);
 
 }

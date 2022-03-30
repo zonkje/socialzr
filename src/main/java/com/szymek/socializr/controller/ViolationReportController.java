@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.security.Principal;
 import java.util.Collection;
 
 @Validated
@@ -25,8 +26,9 @@ public class ViolationReportController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<ApplicationResponse> reportUser(@Valid @RequestBody ViolationReportDTO violationReportDTO){
-        ApplicationResponse response = violationReportService.reportUser(violationReportDTO);
+    public ResponseEntity<ApplicationResponse> reportUser(@Valid @RequestBody ViolationReportDTO violationReportDTO,
+                                                          Principal principal) {
+        ApplicationResponse response = violationReportService.reportUser(violationReportDTO, principal.getName());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

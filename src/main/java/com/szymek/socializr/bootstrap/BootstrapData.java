@@ -28,8 +28,11 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        String userAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/200px-Question_mark_%28black%29.svg.png";
+        String groupAvatarUrl = "https://thumbs.dreamstime.com/b/question-mark-seamless-pattern-vector-marks-monochrome-hipster-background-hand-drawn-random-black-punctuation-eps-197150276.jpg";
+
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null)
-                .username("username").password("password").role(USER).build();
+                .username("username").password("password").role(USER).avatarUrl(userAvatarUrl).build();
         Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin").zipCode("1211").country("Switzerland").build();
         ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801").address(a1).build();
         PostLabel pl1 = PostLabel.builder().name("SELL").build();
@@ -37,7 +40,7 @@ public class BootstrapData implements CommandLineRunner {
         Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).postLabels(null).postThumbUps(null).build();
         Comment c1 = Comment.builder().text("first comment").author(u1).post(p1).commentThumbUps(null).build();
         SocialGroup sg1 = SocialGroup.builder().name("Pioneers").description("First group ever created for this service").creator(u1).members(null)
-                .accessLevel(AccessLevel.PUBLIC).build();
+                .accessLevel(AccessLevel.PUBLIC).avatarUrl(groupAvatarUrl).build();
         PostThumbUp ptu1 = PostThumbUp.builder().post(p1).author(u1).build();
         CommentThumbUp ctu1 = CommentThumbUp.builder().comment(c1).author(u1).build();
         SocialGroupPost sgp1 = SocialGroupPost.builder().text("Very first social group post in this page").author(u1)

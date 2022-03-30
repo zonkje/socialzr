@@ -7,7 +7,8 @@ import java.util.Collection;
 
 public interface ViolationReportService {
 
-    ApplicationResponse reportUser(ViolationReportDTO violationReportDTO);
+    ApplicationResponse reportUser(ViolationReportDTO violationReportDTO, String authorName);
+
     Collection<ViolationReportDTO> findAll(Integer page, Integer size);
 
 }
