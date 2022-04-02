@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class ViolationReportDTO extends TextWidgetDTO{
+public class ViolationReportDTO extends TextWidgetDTO {
 
     Long reportedUserId;
 

@@ -38,8 +38,10 @@ public class SocialGroupPostController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Collection<SocialGroupPostDTO>> getAllSocialGroupPosts(
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<SocialGroupPostDTO> socialGroupPostDTOS = socialGroupPostService.findAll(page, size);
         return new ResponseEntity<>(socialGroupPostDTOS, HttpStatus.OK);
     }
@@ -48,8 +50,10 @@ public class SocialGroupPostController {
     @GetMapping("/label/id/{labelId}")
     public ResponseEntity<Collection<SocialGroupPostDTO>> getSocialGroupPostsByLabelId(
             @PathVariable("labelId") @Min(1) @ValidId(entity = "PostLabel") Long labelId,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size,
             Principal principal) {
         Collection<SocialGroupPostDTO> socialGroupPostDTOS = socialGroupPostService.findAllByLabelId(labelId,
                 principal.getName(), page, size);
@@ -60,8 +64,10 @@ public class SocialGroupPostController {
     @GetMapping("/label/name/{labelName}")
     public ResponseEntity<Collection<SocialGroupPostDTO>> getSocialGroupPostsByLabelName(
             @PathVariable("labelName") @Size(min = 2) String labelName,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size,
             Principal principal) {
         Collection<SocialGroupPostDTO> socialGroupPostDTOS = socialGroupPostService.findAllByLabelName(labelName,
                 principal.getName(), page, size);
@@ -72,8 +78,10 @@ public class SocialGroupPostController {
     @GetMapping("/social_group/{socialGroupId}")
     public ResponseEntity<Collection<SocialGroupPostDTO>> getSocialGroupPostsBySocialGroupId(
             @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size,
             Principal principal) {
         Collection<SocialGroupPostDTO> socialGroupPostDTOS = socialGroupPostService
                 .findAllBySocialGroupId(socialGroupId, principal.getName(), page, size);
@@ -82,11 +90,22 @@ public class SocialGroupPostController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<SocialGroupPostDTO> createSocialGroupPost(
+    public ResponseEntity<SocialGroupPostDTO> addSocialGroupPost(
             @Valid @RequestBody SocialGroupPostDTO socialGroupPostDTO,
             Principal principal) {
-        SocialGroupPostDTO createdSocialGroupPost = socialGroupPostService.create(socialGroupPostDTO, principal.getName());
+        SocialGroupPostDTO createdSocialGroupPost = socialGroupPostService.create(socialGroupPostDTO,
+                principal.getName());
         return new ResponseEntity<>(createdSocialGroupPost, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/thumb_up")
+    public ResponseEntity<PostThumbUpDTO> addSocialGroupPostThumbUp(
+            @Valid @RequestBody PostThumbUpDTO postThumbUpDTO,
+            Principal principal) {
+        PostThumbUpDTO createdPostThumbUpDTO = socialGroupPostService.addThumbUpToPost(postThumbUpDTO,
+                principal.getName());
+        return new ResponseEntity<>(createdPostThumbUpDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -94,7 +113,8 @@ public class SocialGroupPostController {
     public ResponseEntity<SocialGroupPostDTO> updateSocialGroupPost(
             @Valid @RequestBody SocialGroupPostDTO socialGroupPostDTO,
             Principal principal) {
-        SocialGroupPostDTO updatedSocialGroupPost = socialGroupPostService.update(socialGroupPostDTO, principal.getName());
+        SocialGroupPostDTO updatedSocialGroupPost = socialGroupPostService.update(socialGroupPostDTO,
+                principal.getName());
         return new ResponseEntity<>(updatedSocialGroupPost, HttpStatus.OK);
     }
 
@@ -105,15 +125,6 @@ public class SocialGroupPostController {
             Principal principal) {
         ApplicationResponse response = socialGroupPostService.deleteById(postId, principal.getName());
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/thumb_up")
-    public ResponseEntity<PostThumbUpDTO> addSocialGroupPostThumbUp(
-            @Valid @RequestBody PostThumbUpDTO postThumbUpDTO,
-            Principal principal) {
-        PostThumbUpDTO createdPostThumbUpDTO = socialGroupPostService.addThumbUpToPost(postThumbUpDTO, principal.getName());
-        return new ResponseEntity<>(createdPostThumbUpDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

@@ -20,7 +20,8 @@ public class ContactInformationDTO extends BaseEntityDTO {
     private String email;
 
     @NotBlank(message = "Phone number cannot be blank")
-    @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}", message = "TO MUSI BYC TELEFON")
+    @Pattern(regexp = "\\d{9}|(?:\\d{3}-){2}\\d{3}", message = "The phone number must match the patterns: " +
+            "xxxxxxxxx or xxx-xxx-xxx")
     private String phoneNumber;
 
     private List<String> websitesURLs;

@@ -3,7 +3,6 @@ package com.szymek.socializr.controller;
 import com.szymek.socializr.common.ApplicationResponse;
 import com.szymek.socializr.common.SocialzrConstants;
 import com.szymek.socializr.dto.SocialGroupDTO;
-import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.SocialGroupService;
 import com.szymek.socializr.validation.ValidId;
 import lombok.RequiredArgsConstructor;
@@ -37,16 +36,19 @@ public class SocialGroupController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Collection<SocialGroupDTO>> getAllSocialGroups(
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<SocialGroupDTO> socialGroupDTOS = socialGroupService.findAll(page, size);
         return new ResponseEntity<>(socialGroupDTOS, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<SocialGroupDTO> createSocialGroup(@Valid @RequestBody SocialGroupDTO socialGroupDTO,
-                                                            Principal principal) {
+    public ResponseEntity<SocialGroupDTO> addSocialGroup(
+            @Valid @RequestBody SocialGroupDTO socialGroupDTO,
+            Principal principal) {
         SocialGroupDTO createdSocialGroupDTO = socialGroupService.create(socialGroupDTO, principal.getName());
         return new ResponseEntity<>(createdSocialGroupDTO, HttpStatus.CREATED);
     }

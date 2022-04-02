@@ -9,6 +9,7 @@ import java.util.List;
 public interface PostLabelMapper {
 
     Collection<PostLabel> map(List<String> postLabels, Post post);
+
     List<String> map(Collection<PostLabel> postLabels);
 
 }

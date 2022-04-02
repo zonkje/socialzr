@@ -1,7 +1,6 @@
 package com.szymek.socializr.security;
 
 import com.szymek.socializr.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +22,6 @@ public class AuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
                 .findByUsername(username)
-                .orElseThrow( () -> new UsernameNotFoundException(String.format("User %s not found", username)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
     }
 }

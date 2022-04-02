@@ -50,18 +50,16 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 .collect(Collectors.toSet());
         simpleGrantedAuthorities.forEach(
                 authority -> {
-                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+authority.getAuthority()));
+                    simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + authority.getAuthority()));
                 }
         );
 
-        SecurityContextHolder.getContext()
-                .setAuthentication(
-                        new UsernamePasswordAuthenticationToken(
-                                user,
-                                null,
-                                simpleGrantedAuthorities
-                        )
-                );
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        simpleGrantedAuthorities
+                ));
         filterChain.doFilter(request, response);
     }
 }

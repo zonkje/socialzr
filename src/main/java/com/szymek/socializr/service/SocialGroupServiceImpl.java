@@ -10,7 +10,6 @@ import com.szymek.socializr.model.Role;
 import com.szymek.socializr.model.SocialGroup;
 import com.szymek.socializr.model.User;
 import com.szymek.socializr.repository.SocialGroupRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -33,6 +32,8 @@ public class SocialGroupServiceImpl implements SocialGroupService {
     private final SocialGroupRepository socialGroupRepository;
     private final SocialGroupMapper socialGroupMapper;
     private final UserService userService;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault());
 
     @Autowired
     public SocialGroupServiceImpl(SocialGroupRepository socialGroupRepository, SocialGroupMapper socialGroupMapper, @Lazy UserService userService) {
@@ -40,9 +41,6 @@ public class SocialGroupServiceImpl implements SocialGroupService {
         this.socialGroupMapper = socialGroupMapper;
         this.userService = userService;
     }
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-            .withZone(ZoneId.systemDefault());
 
     @Override
     public Collection<SocialGroupDTO> findAll(Integer page, Integer size) {

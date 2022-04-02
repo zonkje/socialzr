@@ -29,8 +29,8 @@ public interface SocialGroupPostMapper extends BaseMapper<SocialGroupPost, Socia
     @Mapping(source = "postThumbUps", target = "postThumbUpCount")
     SocialGroupPostDTO toDTO(SocialGroupPost entity);
 
-    default Integer postThumbUpCountMap(Collection<PostThumbUp> postThumbUps){
-        if(postThumbUps == null) return 0;
+    default Integer postThumbUpCountMap(Collection<PostThumbUp> postThumbUps) {
+        if (postThumbUps == null) return 0;
         return postThumbUps.size();
     }
 

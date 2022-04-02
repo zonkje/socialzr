@@ -26,7 +26,7 @@ public interface CommentMapper extends BaseMapper<Comment, CommentDTO> {
     CommentDTO toDTO(Comment entity);
 
     default Integer commentThumbUpCountMap(Collection<CommentThumbUp> commentThumbUps) {
-        if(commentThumbUps == null) return 0;
+        if (commentThumbUps == null) return 0;
         return commentThumbUps.size();
     }
 }

@@ -113,7 +113,7 @@ public class SocialzrApplicationExceptionHandler {
     public ResponseEntity<ApplicationExceptionResponse> handleException(HttpMessageNotReadableException exception) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String message;
-        if(exception.getCause() instanceof UnrecognizedPropertyException) {
+        if (exception.getCause() instanceof UnrecognizedPropertyException) {
             UnrecognizedPropertyException unrecognizedPropertyException = (UnrecognizedPropertyException) exception.getCause();
             message = String.format("Unrecognized field: '%s'", unrecognizedPropertyException.getPropertyName());
         } else {
@@ -129,7 +129,7 @@ public class SocialzrApplicationExceptionHandler {
                 .build(), status);
     }
 
-    @ExceptionHandler({ Exception.class })
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<ApplicationExceptionResponse> handleException(Exception exception, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(ApplicationExceptionResponse.builder()

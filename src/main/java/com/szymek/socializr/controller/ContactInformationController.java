@@ -25,14 +25,15 @@ public class ContactInformationController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{contactInformationId}")
     public ResponseEntity<ContactInformationDTO> getContactInformation(
-            @PathVariable("contactInformationId") @Min(1) @ValidId(entity = "ContactInformation") Long contactInformationId) {
+            @PathVariable("contactInformationId") @Min(1) @ValidId(entity = "ContactInformation")
+                    Long contactInformationId) {
         ContactInformationDTO contactInformationDTO = contactInformationService.findById(contactInformationId);
         return new ResponseEntity<>(contactInformationDTO, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<ContactInformationDTO> createContactInformation(
+    public ResponseEntity<ContactInformationDTO> addContactInformation(
             @Valid @RequestBody ContactInformationDTO contactInformationDTO,
             Principal principal) {
         ContactInformationDTO createdContactInformation = contactInformationService
@@ -44,8 +45,7 @@ public class ContactInformationController {
     @PatchMapping
     public ResponseEntity<ContactInformationDTO> updateContactInformation(
             @Valid @RequestBody ContactInformationDTO contactInformationDTO,
-            Principal principal
-    ) {
+            Principal principal) {
         ContactInformationDTO updatedContactInformation = contactInformationService.update(contactInformationDTO,
                 principal.getName());
         return new ResponseEntity<>(updatedContactInformation, HttpStatus.OK);

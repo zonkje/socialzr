@@ -38,9 +38,11 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Collection<PostDTO>> getAllPosts(
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size,
-            @RequestParam(defaultValue = "0", value = "userId", required = false) @Min(0) @ValidId(entity = "User") Long userId) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size,
+            @RequestParam(defaultValue = "0", value = "userId", required = false) @Min(0) Long userId) {
         Collection<PostDTO> postDTOS = userId != 0 ?
                 postService.findAllByAuthor(userId, page, size) :
                 postService.findAll(page, size);
@@ -52,8 +54,10 @@ public class PostController {
     @GetMapping("/label/id/{labelId}")
     public ResponseEntity<Collection<PostDTO>> getPostsByLabelId(
             @PathVariable("labelId") @Min(1) @ValidId(entity = "PostLabel") Long labelId,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<PostDTO> postDTOS = postService.findAllByLabelId(labelId, page, size);
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
@@ -63,19 +67,30 @@ public class PostController {
     @GetMapping("/label/name/{labelName}")
     public ResponseEntity<Collection<PostDTO>> getPostsByLabelName(
             @PathVariable("labelName") @Size(min = 2) String labelName,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<PostDTO> postDTOS = postService.findAllByLabelName(labelName, page, size);
         return new ResponseEntity<>(postDTOS, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<PostDTO> createPost(
+    public ResponseEntity<PostDTO> addPost(
             @Valid @RequestBody PostDTO postDTO,
             Principal principal) {
         PostDTO createdPost = postService.create(postDTO, principal.getName());
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/thumb_up")
+    public ResponseEntity<PostThumbUpDTO> addPostThumbUp(
+            @Valid @RequestBody PostThumbUpDTO postThumbUpDTO,
+            Principal principal) {
+        PostThumbUpDTO createdPostThumbUpDTO = postService.addThumbUpToPost(postThumbUpDTO, principal.getName());
+        return new ResponseEntity<>(createdPostThumbUpDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -94,15 +109,6 @@ public class PostController {
             Principal principal) {
         ApplicationResponse response = postService.deleteById(postId, principal.getName());
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/thumb_up")
-    public ResponseEntity<PostThumbUpDTO> addPostThumbUp(
-            @Valid @RequestBody PostThumbUpDTO postThumbUpDTO,
-            Principal principal) {
-        PostThumbUpDTO createdPostThumbUpDTO = postService.addThumbUpToPost(postThumbUpDTO, principal.getName());
-        return new ResponseEntity<>(createdPostThumbUpDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

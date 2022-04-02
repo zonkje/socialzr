@@ -3,7 +3,6 @@ package com.szymek.socializr.config;
 import com.szymek.socializr.security.AuthenticationService;
 import com.szymek.socializr.security.JWTAuthenticationFilter;
 import com.szymek.socializr.security.JWTAuthorizationFilter;
-import com.szymek.socializr.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .authenticationProvider(daoAuthenticationProvider());
+        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     @Bean

@@ -89,7 +89,7 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
         userService.checkPermission(socialGroupPost.getAuthor().getId(), loggedUserName, "delete",
                 "social group post");
         String message = String.format("Post with ID: %s has been deleted", socialGroupPostId);
-            socialGroupPostRepository.deleteById(socialGroupPostId);
+        socialGroupPostRepository.deleteById(socialGroupPostId);
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -106,10 +106,10 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
 
         return socialGroupPostList
                 .stream()
-                .filter( socialGroupPost -> {
+                .filter(socialGroupPost -> {
                     SocialGroup socialGroup = socialGroupPost.getSocialGroup();
                     return (user.getRole().equals(Role.ADMIN) || socialGroup.getAccessLevel().equals(AccessLevel.PUBLIC)
-                    || user.getSocialGroups().contains(socialGroup));
+                            || user.getSocialGroups().contains(socialGroup));
                 })
                 .map(socialGroupPostMapper::toDTO)
                 .collect(Collectors.toList());
@@ -124,7 +124,7 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
 
         return socialGroupPostList
                 .stream()
-                .filter( socialGroupPost -> {
+                .filter(socialGroupPost -> {
                     SocialGroup socialGroup = socialGroupPost.getSocialGroup();
                     return (user.getRole().equals(Role.ADMIN) || socialGroup.getAccessLevel().equals(AccessLevel.PUBLIC)
                             || user.getSocialGroups().contains(socialGroup));
@@ -173,7 +173,7 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
         userService.checkPermission(postThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
                 "post thumb up");
         String message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
-            postThumbUpRepository.deleteById(thumbUpId);
+        postThumbUpRepository.deleteById(thumbUpId);
         return ApplicationResponse
                 .builder()
                 .messages(List.of(message))
@@ -181,7 +181,7 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
                 .build();
     }
 
-    private SocialGroupPost findSocialGroupPostById(Long socialGroupPostId){
+    private SocialGroupPost findSocialGroupPostById(Long socialGroupPostId) {
         return socialGroupPostRepository
                 .findById(socialGroupPostId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", socialGroupPostId));

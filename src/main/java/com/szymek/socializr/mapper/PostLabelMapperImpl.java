@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class PostLabelMapperImpl implements PostLabelMapper {
 
     @Override
     public Collection<PostLabel> map(List<String> postLabels, Post post) {
+        if (postLabels == null) return Collections.emptyList();
         return postLabels
                 .stream()
                 .map(label -> {
@@ -47,9 +49,7 @@ public class PostLabelMapperImpl implements PostLabelMapper {
 
     private PostLabel buildPostLabel(String postLabelName, Post post) {
 
-        PostLabel postLabel = PostLabel.builder()
-                .name(postLabelName)
-                .build();
+        PostLabel postLabel = PostLabel.builder().name(postLabelName).build();
         postLabel.getPosts().add(post);
         return postLabel;
 

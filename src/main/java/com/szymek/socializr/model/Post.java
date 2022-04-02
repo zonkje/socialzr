@@ -16,7 +16,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "post")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Post extends TextWidget{
+public class Post extends TextWidget {
 
     @OneToMany(
             mappedBy = "post",

@@ -29,17 +29,30 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUser(@PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
         UserDTO userDTO = userService.findById(userId);
-
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
     public ResponseEntity<Collection<UserDTO>> getAllUsers(
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
-    ) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<UserDTO> userDTOS = userService.findAll(page, size);
+        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/social_group/{socialGroupId}")
+    public ResponseEntity<Collection<UserDTO>> getAllUsersBySocialGroupId(
+            @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size,
+            Principal principal) {
+        Collection<UserDTO> userDTOS = userService.findAllBySocialGroupId(socialGroupId, principal.getName(), page, size);
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
@@ -50,14 +63,6 @@ public class UserController {
             Principal principal) {
         UserDTO updatedUser = userService.update(userDTO, principal.getName());
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ApplicationResponse> deleteUser(
-            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
-        ApplicationResponse response = userService.deleteById(userId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -78,15 +83,12 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/social_group/{socialGroupId}")
-    public ResponseEntity<Collection<UserDTO>> getAllUsersBySocialGroupId(
-            @PathVariable("socialGroupId") @Min(1) @ValidId(entity = "SocialGroup") Long socialGroupId,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size,
-            Principal principal) {
-        Collection<UserDTO> userDTOS = userService.findAllBySocialGroupId(socialGroupId, principal.getName(), page, size);
-        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApplicationResponse> deleteUser(
+            @PathVariable("userId") @Min(1) @ValidId(entity = "User") Long userId) {
+        ApplicationResponse response = userService.deleteById(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

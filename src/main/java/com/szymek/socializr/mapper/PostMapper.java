@@ -28,8 +28,8 @@ public interface PostMapper extends BaseMapper<Post, PostDTO> {
     @Mapping(source = "postThumbUps", target = "postThumbUpCount")
     PostDTO toDTO(Post entity);
 
-    default Integer postThumbUpCountMap(Collection<PostThumbUp> postThumbUps){
-        if(postThumbUps == null) return 0;
+    default Integer postThumbUpCountMap(Collection<PostThumbUp> postThumbUps) {
+        if (postThumbUps == null) return 0;
         return postThumbUps.size();
     }
 }

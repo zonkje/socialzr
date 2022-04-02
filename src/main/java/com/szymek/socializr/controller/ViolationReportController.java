@@ -24,23 +24,24 @@ public class ViolationReportController {
 
     private final ViolationReportService violationReportService;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping
-    public ResponseEntity<ApplicationResponse> reportUser(@Valid @RequestBody ViolationReportDTO violationReportDTO,
-                                                          Principal principal) {
-        ApplicationResponse response = violationReportService.reportUser(violationReportDTO, principal.getName());
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Collection<ViolationReportDTO>> getAllViolationReports(
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false) @Min(0) Integer page,
-            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false) @Min(0) Integer size
-    ) {
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_NUMBER, value = "page", required = false)
+            @Min(0) Integer page,
+            @RequestParam(defaultValue = SocialzrConstants.DEFAULT_PAGE_SIZE, value = "size", required = false)
+            @Min(0) Integer size) {
         Collection<ViolationReportDTO> violationReportDTOS = violationReportService.findAll(page, size);
         return new ResponseEntity<>(violationReportDTOS, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping
+    public ResponseEntity<ApplicationResponse> addViolationReport(
+            @Valid @RequestBody ViolationReportDTO violationReportDTO,
+            Principal principal) {
+        ApplicationResponse response = violationReportService.reportUser(violationReportDTO, principal.getName());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 }

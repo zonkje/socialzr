@@ -28,18 +28,25 @@ public class BootstrapData implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        String userAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/200px-Question_mark_%28black%29.svg.png";
-        String groupAvatarUrl = "https://thumbs.dreamstime.com/b/question-mark-seamless-pattern-vector-marks-monochrome-hipster-background-hand-drawn-random-black-punctuation-eps-197150276.jpg";
+        String userAvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28bla" +
+                "ck%29.svg/200px-Question_mark_%28black%29.svg.png";
+        String groupAvatarUrl = "https://thumbs.dreamstime.com/b/question-mark-seamless-pattern-vector-marks-mo" +
+                "nochrome-hipster-background-hand-drawn-random-black-punctuation-eps-197150276.jpg";
 
-        User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null).posts(null).socialGroups(null)
-                .username("username").password("password").role(USER).avatarUrl(userAvatarUrl).build();
-        Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin").zipCode("1211").country("Switzerland").build();
-        ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801").address(a1).build();
+        User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null)
+                .posts(null).socialGroups(null).username("username").password("password123B").role(USER)
+                .avatarUrl(userAvatarUrl).build();
+        Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin")
+                .zipCode("1211").country("Switzerland").build();
+        ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801")
+                .address(a1).build();
         PostLabel pl1 = PostLabel.builder().name("SELL").build();
         PostLabel pl2 = PostLabel.builder().name("LOCAL").build();
-        Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).postLabels(null).postThumbUps(null).build();
+        Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).postLabels(null)
+                .postThumbUps(null).build();
         Comment c1 = Comment.builder().text("first comment").author(u1).post(p1).commentThumbUps(null).build();
-        SocialGroup sg1 = SocialGroup.builder().name("Pioneers").description("First group ever created for this service").creator(u1).members(null)
+        SocialGroup sg1 = SocialGroup.builder().name("Pioneers")
+                .description("First group ever created for this service").creator(u1).members(null)
                 .accessLevel(AccessLevel.PUBLIC).avatarUrl(groupAvatarUrl).build();
         PostThumbUp ptu1 = PostThumbUp.builder().post(p1).author(u1).build();
         CommentThumbUp ctu1 = CommentThumbUp.builder().comment(c1).author(u1).build();
@@ -76,7 +83,8 @@ public class BootstrapData implements CommandLineRunner {
         sg1.setSocialGroupPosts(new ArrayList<>());
         sg1.getSocialGroupPosts().add(sgp1);
         sgp1.setSocialGroup(sg1);
-        ci1.getWebsitesURLs().addAll(List.of("https://www.linkedin.com/company/docker/", "https://www.linkedin.com/company/github/"));
+        ci1.getWebsitesURLs().addAll(List.of("https://www.linkedin.com/company/docker/",
+                "https://www.linkedin.com/company/github/"));
 
         contactInformationRepository.save(ci1);
         userRepository.save(u1);

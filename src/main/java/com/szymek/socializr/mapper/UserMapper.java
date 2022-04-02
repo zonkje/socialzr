@@ -14,7 +14,7 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "contactInformationId", target = "contactInformation.id")
+    @Mapping(target = "contactInformation.id", source = "contactInformationId")
     @Mapping(ignore = true, target = "posts")
     @Mapping(ignore = true, target = "socialGroups")
     @Mapping(target = "password", qualifiedBy = EncodedMapping.class)

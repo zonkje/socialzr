@@ -6,7 +6,7 @@ import com.szymek.socializr.dto.CommentThumbUpDTO;
 
 import java.util.Collection;
 
-public interface CommentService extends CrudService<CommentDTO, Long>{
+public interface CommentService extends CrudService<CommentDTO, Long> {
 
     CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO, String authorName);
 

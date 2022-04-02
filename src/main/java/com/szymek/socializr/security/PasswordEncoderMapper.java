@@ -11,7 +11,7 @@ public class PasswordEncoderMapper {
     private final PasswordEncoder passwordEncoder;
 
     @EncodedMapping
-    public String encode(String password){
+    public String encode(String password) {
         return passwordEncoder.encode(password);
     }
 

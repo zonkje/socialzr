@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class SocialGroupPostDTO extends PostDTO{
+public class SocialGroupPostDTO extends PostDTO {
 
     Long socialGroupId;
 

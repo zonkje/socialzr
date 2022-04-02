@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "contact_information")
-public class ContactInformation extends BaseEntity{
+public class ContactInformation extends BaseEntity {
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email is invalid")

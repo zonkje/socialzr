@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "violation_report")
-public class ViolationReport extends TextWidget{
+public class ViolationReport extends TextWidget {
 
     @NotNull(message = "Reported user cannot be null")
     @ManyToOne

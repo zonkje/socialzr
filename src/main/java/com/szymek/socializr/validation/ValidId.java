@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Positive
 public @interface ValidId {
 
-    public String message() default "object ID not found";
+    String message() default "object ID not found";
 
     Class<?>[] groups() default {};
 

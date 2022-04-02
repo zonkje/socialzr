@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
-
         return userMapper.toDTO(user);
     }
 

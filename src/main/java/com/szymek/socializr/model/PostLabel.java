@@ -16,7 +16,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "post_label")
-public class PostLabel extends BaseEntity{
+public class PostLabel extends BaseEntity {
 
     @NotBlank(message = "Label name cannot be blank")
     @Column(name = "name")

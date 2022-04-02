@@ -1,5 +1,6 @@
 package com.szymek.socializr.model;
 
+import com.szymek.socializr.validation.PasswordStrength;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
@@ -19,14 +20,13 @@ import java.util.Collection;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-    //TODO -got exceptions after add UNIQUE constraint to column 'username'
+//TODO -got exceptions after add UNIQUE constraint to column 'username'
 @Table(name = "user"
 //        ,uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})}
 )
 public class User extends BaseEntity implements UserDetails {
 
     @NotBlank(message = "First name cannot be blank")
-    @Size(min = 2, message = "First name must be equal or greater than 2 characters")
     @Column(name = "first_name")
     private String firstName;
 
@@ -34,9 +34,12 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
+    @NotBlank
+    @Size(min = 2, message = "Username must be equal or greater than 2 characters")
     @Column(name = "username", nullable = false)
     private String username;
 
+    @PasswordStrength
     @Column(name = "password", nullable = false)
     private String password;
 
