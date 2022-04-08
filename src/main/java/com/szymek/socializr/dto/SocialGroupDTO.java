@@ -22,7 +22,6 @@ public class SocialGroupDTO extends BaseEntityDTO {
 
     private String avatarUrl;
 
-    @NotNull
     private Long creatorId;
 
     @NotNull

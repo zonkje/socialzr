@@ -101,6 +101,9 @@ public class SocialGroupServiceImpl implements SocialGroupService {
                                     socialGroup.setAccessLevel(AccessLevel.PUBLIC);
                                 }
                             }
+                            if (socialGroup.getAvatarUrl() != null) {
+                                socialGroup.setAvatarUrl(socialGroupToUpdate.getAvatarUrl());
+                            }
                             return socialGroupMapper.toDTO(socialGroupRepository.save(socialGroup));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("Social Group", "ID", socialGroupId));

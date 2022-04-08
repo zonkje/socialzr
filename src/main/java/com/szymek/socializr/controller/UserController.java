@@ -6,6 +6,8 @@ import com.szymek.socializr.dto.UserDTO;
 import com.szymek.socializr.service.UserService;
 import com.szymek.socializr.validation.ValidId;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,6 +58,10 @@ public class UserController {
         return new ResponseEntity<>(userDTOS, HttpStatus.OK);
     }
 
+    /*
+    TODO: -doesn't work
+        throws AbstractMessageConverterMethodArgumentResolver$EmptyBodyCheckingHttpInputMessage
+    */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping
     public ResponseEntity<UserDTO> updateUser(

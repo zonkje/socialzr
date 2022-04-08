@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
 import java.time.Instant;
@@ -57,7 +59,18 @@ public class SocialzrApplicationExceptionHandler {
 
     @ExceptionHandler(ThumbUpException.class)
     public ResponseEntity<ApplicationExceptionResponse> handleException(ThumbUpException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        return new ResponseEntity<>(ApplicationExceptionResponse.builder()
+                .messages(List.of(exception.getMessage()))
+                .httpStatus(status)
+                .httpStatusCode(status.value())
+                .timeStamp(formatter.format(Instant.now()))
+                .build(), status);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApplicationExceptionResponse> handleException(AccessDeniedException exception) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
         return new ResponseEntity<>(ApplicationExceptionResponse.builder()
                 .messages(List.of(exception.getMessage()))
                 .httpStatus(status)
@@ -92,6 +105,24 @@ public class SocialzrApplicationExceptionHandler {
                 .build(), status
         );
 
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApplicationExceptionResponse> handleException(MethodArgumentTypeMismatchException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String requiredTypeMessage = exception.getRequiredType().toString();
+        String requiredType = requiredTypeMessage.substring(requiredTypeMessage.lastIndexOf('.')+1);
+        return new ResponseEntity<>(ApplicationExceptionResponse.builder()
+                .messages(List.of(
+                        String.format("%s value must be type %s. The received value: '%s' is not valid.",
+                                exception.getName().toString(),
+                                requiredType,
+                                exception.getValue().toString())
+                ))
+                .httpStatus(status)
+                .httpStatusCode(status.value())
+                .timeStamp(formatter.format(Instant.now()))
+                .build(), status);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -135,7 +166,8 @@ public class SocialzrApplicationExceptionHandler {
         return new ResponseEntity<>(ApplicationExceptionResponse.builder()
                 .messages(List.of(
                         "Unexpected error occurred",
-                        exception.getMessage()
+                        exception.getMessage(),
+                        exception.toString()
                 ))
                 .httpStatus(status)
                 .httpStatusCode(status.value())

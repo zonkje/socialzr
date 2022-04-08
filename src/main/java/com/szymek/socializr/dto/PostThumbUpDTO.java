@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @ToString(callSuper = true)
 public class PostThumbUpDTO extends BaseEntityDTO {
 
-    @NotNull(message = "Thumb Up author ID cannot be null")
     private Long authorId;
 
     @NotNull(message = "Thumb Up must be assigned to the post")

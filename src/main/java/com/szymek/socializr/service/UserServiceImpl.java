@@ -100,6 +100,9 @@ public class UserServiceImpl implements UserService {
                             if (user.getLastName() != null) {
                                 user.setLastName(userToUpdate.getLastName());
                             }
+                            if (user.getAvatarUrl() != null) {
+                                user.setAvatarUrl(userToUpdate.getAvatarUrl());
+                            }
                             return userMapper.toDTO(userRepository.save(user));
                         }
                 ).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
@@ -156,7 +159,7 @@ public class UserServiceImpl implements UserService {
     public Collection<UserDTO> findAllBySocialGroupId(Long socialGroupId, String loggedUserName, Integer page, Integer size) {
         socialGroupService.checkSocialGroupPermission(socialGroupId, loggedUserName);
         SocialGroup socialGroup = socialGroupService.findSocialGroupById(socialGroupId);
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
+        Pageable pageable = PageRequest.of(page, size);
         Page<User> socialGroupMembers = userRepository.findUsersBySocialGroups(socialGroup, pageable);
         List<User> socialGroupMembersList = socialGroupMembers.getContent();
         return socialGroupMembersList
