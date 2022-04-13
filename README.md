@@ -2,10 +2,12 @@
 
 # Socialzr Rest API
 
+#### (in development)
+
 [//]: # (ADD ERD DIAGRAM)
 
-[general info description here]
-Functionality of the application inclused:
+The monolithic architecture REST API for performing CRUD operations.
+Functionality of the application includes:
 
 + user registration,
 + writing posts and interacting with them by commenting or adding a thumbs up,
@@ -23,21 +25,32 @@ Functionality of the application inclused:
 
 ## Setup guide
 
+**_NOTE:_**  Make sure you have a docker installed, for example by running.
+```bash
+docker --version
+```
+
 **1. Run MySQL container**
 
 ```bash
-docker run --name socialzrdb -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql
+docker run --name socialzr-db -p 3306:3306 --network=socialzr-net -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql
 ```
 
-**2. Step 2**
+**2. Configure MySQL**
+
+Execute ***[this script](https://github.com/zonkje/socialzr/blob/master/src/main/scripts/configure-mysql.sql)*** in your mysql app
+
+**3. Run API container**
 
 ```bash
-[TBA]
+docker run --name socialzr-api -p 8080:8080 --network=socialzr-net -e DATABASE_HOST=socialzr-db m0gwai/socialzr
 ```
+
+All resources are available via url with a prefix http://localhost:8080/
 
 ## API Endpoints
 
-Models: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commentnav)
+Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commentnav)
 , [Comment Thumb Up](#commentthumbupnav), [Social Group](#socialgroupnav), [User](#usernav)
 , [Contact Information](#contactinformationnav), [Violation Report](#violationreportnav)
 
