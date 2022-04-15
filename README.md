@@ -6,12 +6,11 @@
 
 [//]: # (ADD ERD DIAGRAM)
 
-The monolithic architecture REST API for performing CRUD operations.
-Functionality of the application includes:
+REST API for performing CRUD operations developed in monolithic architecture. Functionality of the application includes:
 
-+ user registration,
-+ writing posts and interacting with them by commenting or adding a thumbs up,
-+ creating and joining groups and also writing posts in them,
++ user registration
++ writing posts and interacting within them by commenting or adding "thumb up"s
++ creating and joining groups, posting in them
 + reporting posts and comments with inappropriate content
 
 #### Stack
@@ -25,28 +24,39 @@ Functionality of the application includes:
 
 ## Setup guide
 
-**_NOTE:_**  Make sure you have a docker installed, for example by running.
+**_NOTE:_**  Make sure you have a docker installed, for example by running
 ```bash
 docker --version
 ```
 
-**1. Run MySQL container**
+**1. Create docker network**
+
+```bash
+docker network create socialzr-net
+```
+
+**2. Run MySQL container**
 
 ```bash
 docker run --name socialzr-db -p 3306:3306 --network=socialzr-net -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql
 ```
 
-**2. Configure MySQL**
+**3. Configure MySQL**
 
 Execute ***[this script](https://github.com/zonkje/socialzr/blob/master/src/main/scripts/configure-mysql.sql)*** in your mysql app
 
-**3. Run API container**
+**4. Run API container**
 
 ```bash
 docker run --name socialzr-api -p 8080:8080 --network=socialzr-net -e DATABASE_HOST=socialzr-db m0gwai/socialzr
 ```
 
 All resources are available via url with a prefix http://localhost:8080/
+
+You can test your running API with Newman by executing
+```bash
+docker run --name socialzr-newman-tests --network=socialzr-net -t postman/newman run "https://www.getpostman.com/collections/276c5826be846f87eb86"
+```
 
 ## API Endpoints
 
