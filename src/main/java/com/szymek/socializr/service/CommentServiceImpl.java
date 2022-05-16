@@ -107,7 +107,7 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository    //replace with private method
                 .findById(commentId)
                 .map(comment -> {
-                            if (comment.getText() != null) {
+                            if (commentToUpdate.getText() != null) {
                                 comment.setText(commentToUpdate.getText());
                             }
                             return commentMapper.toDTO(commentRepository.save(comment));

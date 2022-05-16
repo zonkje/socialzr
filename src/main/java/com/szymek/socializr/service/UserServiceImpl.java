@@ -94,13 +94,13 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(userId)
                 .map(user -> {
-                            if (user.getFirstName() != null) {
+                            if (userToUpdate.getFirstName() != null) {
                                 user.setFirstName(userToUpdate.getFirstName());
                             }
-                            if (user.getLastName() != null) {
+                            if (userToUpdate.getLastName() != null) {
                                 user.setLastName(userToUpdate.getLastName());
                             }
-                            if (user.getAvatarUrl() != null) {
+                            if (userToUpdate.getAvatarUrl() != null) {
                                 user.setAvatarUrl(userToUpdate.getAvatarUrl());
                             }
                             return userMapper.toDTO(userRepository.save(user));

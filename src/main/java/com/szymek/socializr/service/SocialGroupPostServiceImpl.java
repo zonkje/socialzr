@@ -75,8 +75,19 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
         return socialGroupPostRepository
                 .findById(socialGroupPostId)
                 .map(socialGroupPost -> {
-                            if (socialGroupPost.getText() != null) {
+                            if (socialGroupPostToUpdate.getText() != null) {
                                 socialGroupPost.setText(socialGroupPostToUpdate.getText());
+                            }
+                            if (socialGroupPostToUpdate.getPostLabels() != null) {
+
+                                Collection<PostLabel> postLabels = socialGroupPost.getPostLabels();
+                                postLabels.forEach(
+                                        label -> label.getPosts().remove(socialGroupPost)
+                                );
+
+                                socialGroupPost.getPostLabels().clear();
+
+                                socialGroupPost.setPostLabels(postLabelMapper.map(socialGroupPostToUpdate.getPostLabels(), socialGroupPost));
                             }
                             return socialGroupPostMapper.toDTO(socialGroupPostRepository.save(socialGroupPost));
                         }
@@ -98,7 +109,8 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllByLabelId(Long labelId, String loggedUserName, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllByLabelId(Long labelId, String loggedUserName, Integer
+            page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsByPostLabelsId(labelId, pageable);
         List<SocialGroupPost> socialGroupPostList = socialGroupPosts.getContent();
@@ -116,7 +128,8 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllByLabelName(String labelName, String loggedUserName, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllByLabelName(String labelName, String loggedUserName, Integer
+            page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsByPostLabelsName(labelName, pageable);
         List<SocialGroupPost> socialGroupPostList = socialGroupPosts.getContent();
@@ -134,7 +147,8 @@ public class SocialGroupPostServiceImpl implements SocialGroupPostService {
     }
 
     @Override
-    public Collection<SocialGroupPostDTO> findAllBySocialGroupId(Long socialGroupId, String loggedUserName, Integer page, Integer size) {
+    public Collection<SocialGroupPostDTO> findAllBySocialGroupId(Long socialGroupId, String loggedUserName, Integer
+            page, Integer size) {
         socialGroupService.checkSocialGroupPermission(socialGroupId, loggedUserName);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createDate");
         Page<SocialGroupPost> socialGroupPosts = socialGroupPostRepository.findSocialGroupPostsBySocialGroupId(socialGroupId, pageable);

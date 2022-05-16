@@ -9,7 +9,9 @@ import com.szymek.socializr.mapper.PostLabelMapper;
 import com.szymek.socializr.mapper.PostMapper;
 import com.szymek.socializr.mapper.PostThumbUpMapper;
 import com.szymek.socializr.model.Post;
+import com.szymek.socializr.model.PostLabel;
 import com.szymek.socializr.model.PostThumbUp;
+import com.szymek.socializr.repository.PostLabelRepository;
 import com.szymek.socializr.repository.PostRepository;
 import com.szymek.socializr.repository.PostThumbUpRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final PostLabelMapper postLabelMapper;
+    private final PostLabelRepository postLabelRepository;
     private final PostThumbUpRepository postThumbUpRepository;
     private final PostThumbUpMapper postThumbUpMapper;
     private final UserService userService;
@@ -86,8 +89,19 @@ public class PostServiceImpl implements PostService {
         return postRepository
                 .findById(postId)
                 .map(post -> {
-                            if (post.getText() != null) {
+                            if (postToUpdate.getText() != null) {
                                 post.setText(postToUpdate.getText());
+                            }
+                            if (postToUpdate.getPostLabels() != null) {
+
+                                Collection<PostLabel> postLabels = post.getPostLabels();
+                                postLabels.forEach(
+                                        label -> label.getPosts().remove(post)
+                                );
+
+                                post.getPostLabels().clear();
+
+                                post.setPostLabels(postLabelMapper.map(postToUpdate.getPostLabels(), post));
                             }
                             return postMapper.toDTO(postRepository.save(post));
                         }

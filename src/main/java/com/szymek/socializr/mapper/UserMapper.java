@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import static com.szymek.socializr.common.SocialzrConstants.DEFAULT_AVATAR_URL;
+
 @Mapper(componentModel = "spring", uses = PasswordEncoderMapper.class)
 public interface UserMapper {
 
@@ -17,6 +19,8 @@ public interface UserMapper {
     @Mapping(ignore = true, target = "posts")
     @Mapping(ignore = true, target = "socialGroups")
     @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
+    @Mapping(target = "avatarUrl", source = "avatarUrl",
+            defaultValue = DEFAULT_AVATAR_URL)
     @Mapping(target = "role", expression = "java(com.szymek.socializr.model.Role.USER)")
     User toEntity(SignUpRequest signUpRequest);
 

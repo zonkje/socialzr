@@ -80,25 +80,25 @@ public class ContactInformationServiceImpl implements ContactInformationService 
         return contactInformationRepository
                 .findById(contactInformationId)
                 .map(contactInformation -> {
-                            if (contactInformation.getEmail() != null) {
+                            if (contactInformationToUpdate.getEmail() != null) {
                                 contactInformation.setEmail(contactInformationToUpdate.getEmail());
                             }
-                            if (contactInformation.getPhoneNumber() != null) {
+                            if (contactInformationToUpdate.getPhoneNumber() != null) {
                                 contactInformation.setPhoneNumber(contactInformationToUpdate.getPhoneNumber());
                             }
-                            if (contactInformation.getWebsitesURLs() != null) {
+                            if (contactInformationToUpdate.getWebsitesURLs() != null) {
                                 contactInformation.setWebsitesURLs(contactInformationToUpdate.getWebsitesURLs());
                             }
-                            if (contactInformation.getAddress().getAddress() != null) {
+                            if (contactInformationToUpdate.getAddress().getAddress() != null) {
                                 contactInformation.getAddress().setAddress(contactInformationToUpdate.getAddress().getAddress());
                             }
-                            if (contactInformation.getAddress().getCity() != null) {
+                            if (contactInformationToUpdate.getAddress().getCity() != null) {
                                 contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
                             }
-                            if (contactInformation.getAddress().getState() != null) {
+                            if (contactInformationToUpdate.getAddress().getState() != null) {
                                 contactInformation.getAddress().setState(contactInformationToUpdate.getAddress().getState());
                             }
-                            if (contactInformation.getAddress().getCity() != null) {
+                            if (contactInformationToUpdate.getAddress().getCity() != null) {
                                 contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
                             }
                             return contactInformationMapper.toDTO(contactInformationRepository.save(contactInformation));

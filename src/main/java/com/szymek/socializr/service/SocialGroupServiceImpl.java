@@ -87,13 +87,13 @@ public class SocialGroupServiceImpl implements SocialGroupService {
         return socialGroupRepository
                 .findById(socialGroupId)
                 .map(socialGroup -> {
-                            if (socialGroup.getName() != null) {
+                            if (socialGroupToUpdate.getName() != null) {
                                 socialGroup.setName(socialGroupToUpdate.getName());
                             }
-                            if (socialGroup.getDescription() != null) {
+                            if (socialGroupToUpdate.getDescription() != null) {
                                 socialGroup.setDescription(socialGroupToUpdate.getDescription());
                             }
-                            if (socialGroup.getAccessLevel() != null) {
+                            if (socialGroupToUpdate.getAccessLevel() != null) {
                                 String accessLevelString = socialGroupToUpdate.getAccessLevel();
                                 if (accessLevelString.equals("PRIVATE")) {
                                     socialGroup.setAccessLevel(AccessLevel.PRIVATE);
@@ -101,7 +101,7 @@ public class SocialGroupServiceImpl implements SocialGroupService {
                                     socialGroup.setAccessLevel(AccessLevel.PUBLIC);
                                 }
                             }
-                            if (socialGroup.getAvatarUrl() != null) {
+                            if (socialGroupToUpdate.getAvatarUrl() != null) {
                                 socialGroup.setAvatarUrl(socialGroupToUpdate.getAvatarUrl());
                             }
                             return socialGroupMapper.toDTO(socialGroupRepository.save(socialGroup));
