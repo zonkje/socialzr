@@ -4,7 +4,7 @@ public class SocialzrConstants {
 
     public static final String DEFAULT_PAGE_NUMBER = "0";
 
-    public static final String DEFAULT_PAGE_SIZE = "3";
+    public static final String DEFAULT_PAGE_SIZE = "7";
 
     public static final Integer TOKEN_EXPIRATION_TIME_DAYS = 40;
 

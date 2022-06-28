@@ -14,7 +14,7 @@ public interface PostService extends CrudService<PostDTO, Long> {
 
     PostThumbUpDTO addThumbUpToPost(PostThumbUpDTO postThumbUp, String authorName);
 
-    ApplicationResponse deletePostThumbUpById(Long thumbUpId, String loggedUserName);
+    ApplicationResponse deletePostThumbUpByPostId(Long thumbUpId, String loggedUserName);
 
     Collection<PostDTO> findAllByAuthor(Long authorId, Integer page, Integer size);
 }

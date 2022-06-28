@@ -94,7 +94,7 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<PostDTO> updatePost(
             @Valid @RequestBody PostDTO postDTO,
             Principal principal) {
@@ -112,11 +112,11 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/thumb_up/{thumbUpId}")
+    @DeleteMapping("/thumb_up/{postId}")
     public ResponseEntity<ApplicationResponse> deletePostThumbUp(
-            @PathVariable("thumbUpId") @Min(1) @ValidId(entity = "PostThumbUp") Long thumbUpId,
+            @PathVariable("postId") @Min(1) @ValidId(entity = "Post") Long postId,
             Principal principal) {
-        ApplicationResponse response = postService.deletePostThumbUpById(thumbUpId, principal.getName());
+        ApplicationResponse response = postService.deletePostThumbUpByPostId(postId, principal.getName());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -34,14 +34,14 @@ public class BootstrapData implements CommandLineRunner {
                 "nochrome-hipster-background-hand-drawn-random-black-punctuation-eps-197150276.jpg";
 
         User u1 = User.builder().firstName("Szymek").lastName("Ptyskowski").contactInformation(null)
-                .posts(null).socialGroups(null).username("username").password("password123B").role(USER)
+                .posts(null).socialGroups(null).username("username").password("password123B!").role(USER)
                 .avatarUrl(userAvatarUrl).build();
         Address a1 = Address.builder().address("Espl. des Particules 1").city("Geneva").state("Meyrin")
                 .zipCode("1211").country("Switzerland").build();
         ContactInformation ci1 = ContactInformation.builder().email("szymek@gmail.com").phoneNumber("797124801")
                 .address(a1).build();
-        PostLabel pl1 = PostLabel.builder().name("SELL").build();
-        PostLabel pl2 = PostLabel.builder().name("LOCAL").build();
+        PostLabel pl1 = PostLabel.builder().name("TEST").build();
+        PostLabel pl2 = PostLabel.builder().name("INFO").build();
         Post p1 = Post.builder().text("Very first post in this page").author(u1).comments(null).postLabels(null)
                 .postThumbUps(null).build();
         Comment c1 = Comment.builder().text("first comment").author(u1).post(p1).commentThumbUps(null).build();

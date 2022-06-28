@@ -42,7 +42,7 @@ public class ContactInformationController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<ContactInformationDTO> updateContactInformation(
             @Valid @RequestBody ContactInformationDTO contactInformationDTO,
             Principal principal) {

@@ -63,7 +63,7 @@ public class UserController {
         throws AbstractMessageConverterMethodArgumentResolver$EmptyBodyCheckingHttpInputMessage
     */
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<UserDTO> updateUser(
             @Valid @RequestBody UserDTO userDTO,
             Principal principal) {

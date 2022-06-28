@@ -54,7 +54,7 @@ public class SocialGroupController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<SocialGroupDTO> updateSocialGroup(
             @Valid @RequestBody SocialGroupDTO socialGroupDTO,
             Principal principal) {

@@ -109,7 +109,7 @@ public class SocialGroupPostController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<SocialGroupPostDTO> updateSocialGroupPost(
             @Valid @RequestBody SocialGroupPostDTO socialGroupPostDTO,
             Principal principal) {

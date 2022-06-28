@@ -15,10 +15,6 @@ import javax.validation.constraints.Size;
 public class SignUpRequest extends UserDTO {
 
     @NotBlank
-    @Size(min = 2, message = "Username must be equal or greater than 2 characters")
-    private String username;
-
-    @NotBlank
     @PasswordStrength
     private String password;
 }

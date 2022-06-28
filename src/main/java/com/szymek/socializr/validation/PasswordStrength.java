@@ -15,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface PasswordStrength {
 
-    String message() default "The password must contain at least 8 characters and  at least 1 upper case letter," +
-            " 1 lower case letter, and 1 numeric character";
+    String message() default "The password must contain at least 8 characters and at least 1 upper case letter," +
+            " 1 lower case letter, 1 numeric character and 1 special character";
 
     Class<?>[] groups() default {};
 

@@ -30,7 +30,7 @@ public class Address {
     @Column(name = "state")
     private String state;
 
-    @Size(min = 4, message = "Country name should be at least 4 characters long")
+    @Size(min = 2, message = "Country name should be at least 2 characters long")
     @Column(name = "country")
     private String country;
 

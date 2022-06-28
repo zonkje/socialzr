@@ -91,7 +91,7 @@ public class CommentController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<CommentDTO> updateComment(
             @Valid @RequestBody CommentDTO commentDTO,
             Principal principal) {
@@ -109,11 +109,11 @@ public class CommentController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/thumb_up/{thumbUpId}")
+    @DeleteMapping("/thumb_up/{commentId}")
     public ResponseEntity<ApplicationResponse> deleteCommentThumbUp(
-            @PathVariable("thumbUpId") @Min(1) @ValidId(entity = "CommentThumbUp") Long thumbUpId,
+            @PathVariable("commentId") @Min(1) @ValidId(entity = "Comment") Long commentId,
             Principal principal) {
-        ApplicationResponse response = commentService.deleteCommentThumbUpById(thumbUpId, principal.getName());
+        ApplicationResponse response = commentService.deleteCommentThumbUpByCommentId(commentId, principal.getName());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

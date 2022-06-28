@@ -101,7 +101,13 @@ public class PostServiceImpl implements PostService {
 
                                 post.getPostLabels().clear();
 
-                                post.setPostLabels(postLabelMapper.map(postToUpdate.getPostLabels(), post));
+                                String concatLabels = "";
+                                for (String label : postToUpdate.getPostLabels()) {
+                                    concatLabels += label;
+                                }
+                                if (concatLabels.length() > 0) {
+                                    post.setPostLabels(postLabelMapper.map(postToUpdate.getPostLabels(), post));
+                                }
                             }
                             return postMapper.toDTO(postRepository.save(post));
                         }
@@ -149,6 +155,7 @@ public class PostServiceImpl implements PostService {
         Long postId = postThumbUpDTO.getPostId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
+        postThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
 
         boolean isAlreadyThumbUpByUser = post.getPostThumbUps().stream()
                 .anyMatch(
@@ -156,7 +163,6 @@ public class PostServiceImpl implements PostService {
                 );
 
         if (!isAlreadyThumbUpByUser) {
-            postThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
             PostThumbUp postThumbUp = postThumbUpMapper.toEntity(postThumbUpDTO);
             return postThumbUpMapper.toDTO(postThumbUpRepository.save(postThumbUp));
         } else {
@@ -166,13 +172,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApplicationResponse deletePostThumbUpById(Long thumbUpId, String loggedUserName) {
-        PostThumbUp postThumbUpToDelete = postThumbUpRepository.findById(thumbUpId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post Thumb Up", "ID", thumbUpId));
+    public ApplicationResponse deletePostThumbUpByPostId(Long postId, String loggedUserName) {
+        Long authorId = userService.findUserByUsername(loggedUserName).getId();
+        PostThumbUp postThumbUpToDelete = postThumbUpRepository.findByAuthorIdAndPostId(authorId, postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "ID", postId));
         userService.checkPermission(postThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
                 "post thumb up");
-        String message = String.format("Post Thumb Up with ID: %s has been deleted", thumbUpId);
-        postThumbUpRepository.deleteById(thumbUpId);
+        String message = String.format("Post Thumb Up with ID: %s has been deleted", postThumbUpToDelete.getId());
+        postThumbUpRepository.deleteById(postThumbUpToDelete.getId());
 
         return ApplicationResponse
                 .builder()

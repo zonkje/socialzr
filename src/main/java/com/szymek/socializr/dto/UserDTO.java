@@ -12,8 +12,10 @@ import javax.validation.constraints.Size;
 @ToString(callSuper = true)
 public class UserDTO extends BaseEntityDTO {
 
-    @NotBlank(message = "First name cannot be blank")
-    @Size(min = 2, message = "First name must be equal or greater than 2 characters")
+    @Size(min = 2, message = "Username must be equal or greater than 2 characters")
+    private String username;
+
+    @NotBlank(message = "First name is required")
     private String firstName;
 
     @NotBlank(message = "Last name is required")

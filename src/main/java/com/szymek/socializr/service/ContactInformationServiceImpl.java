@@ -95,11 +95,14 @@ public class ContactInformationServiceImpl implements ContactInformationService 
                             if (contactInformationToUpdate.getAddress().getCity() != null) {
                                 contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
                             }
+                            if (contactInformationToUpdate.getAddress().getZipCode() != null) {
+                                contactInformation.getAddress().setZipCode(contactInformationToUpdate.getAddress().getZipCode());
+                            }
                             if (contactInformationToUpdate.getAddress().getState() != null) {
                                 contactInformation.getAddress().setState(contactInformationToUpdate.getAddress().getState());
                             }
-                            if (contactInformationToUpdate.getAddress().getCity() != null) {
-                                contactInformation.getAddress().setCity(contactInformationToUpdate.getAddress().getCity());
+                            if (contactInformationToUpdate.getAddress().getCountry() != null) {
+                                contactInformation.getAddress().setCountry(contactInformationToUpdate.getAddress().getCountry());
                             }
                             return contactInformationMapper.toDTO(contactInformationRepository.save(contactInformation));
                         }

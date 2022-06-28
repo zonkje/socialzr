@@ -120,6 +120,7 @@ public class CommentServiceImpl implements CommentService {
         Long commentId = commentThumbUpDTO.getCommentId();
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
+        commentThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
 
         boolean isAlreadyThumbUpByUser = comment.getCommentThumbUps().stream()
                 .anyMatch(
@@ -127,7 +128,6 @@ public class CommentServiceImpl implements CommentService {
                 );
 
         if (!isAlreadyThumbUpByUser) {
-            commentThumbUpDTO.setAuthorId(userService.findByUsername(authorName).getId());
             CommentThumbUp commentThumbUp = commentThumbUpMapper.toEntity(commentThumbUpDTO);
             return commentThumbUpMapper.toDTO(commentThumbUpRepository.save(commentThumbUp));
         } else {
@@ -136,13 +136,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApplicationResponse deleteCommentThumbUpById(Long thumbUpId, String loggedUserName) {
-        CommentThumbUp commentThumbUpToDelete = commentThumbUpRepository.findById(thumbUpId)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment Thumb Up", "ID", thumbUpId));
+    public ApplicationResponse deleteCommentThumbUpByCommentId(Long commentId, String loggedUserName) {
+        Long authorId = userService.findUserByUsername(loggedUserName).getId();
+        CommentThumbUp commentThumbUpToDelete = commentThumbUpRepository.findByAuthorIdAndCommentId(authorId, commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "ID", commentId));
         userService.checkPermission(commentThumbUpToDelete.getAuthor().getId(), loggedUserName, "delete",
                 "comment thumb up");
-        String message = String.format("Comment Thumb Up with ID: %s has been deleted", thumbUpId);
-        commentThumbUpRepository.deleteById(thumbUpId);
+        String message = String.format("Comment Thumb Up with ID: %s has been deleted", commentThumbUpToDelete.getId());
+        commentThumbUpRepository.deleteById(commentThumbUpToDelete.getId());
 
         return ApplicationResponse
                 .builder()

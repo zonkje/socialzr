@@ -55,7 +55,7 @@ All resources are available via url with a prefix http://localhost:8080/
 
 You can test your running API with Newman by executing
 ```bash
-docker run --name socialzr-newman-tests --network=socialzr-net -t postman/newman run "https://www.getpostman.com/collections/276c5826be846f87eb86"
+docker run --name socialzr-newman-tests --network=socialzr-net -t postman/newman run "https://www.getpostman.com/collections/f7c83d675303c93bdfdd"
 ```
 
 ## API Endpoints
@@ -80,7 +80,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | GET | /api/v1/post/label/id/{labelId} | Get most recent posts by label ID | optional query params: page and size |
 | GET | /api/v1/post/label/name/{labelName} | Get most recent posts by label name | optional query params: page and size |
 | POST | /api/v1/post | Add new post | [show sample request body](#postjson) |
-| PATCH | /api/v1/post/ | Update existing post | [show sample request body](#postjson) |
+| PUT | /api/v1/post/ | Update existing post | [show sample request body](#postjson) |
 | DELETE | /api/v1/post/{postId} | Delete post with specific ID |  |
 
 #### <a id="postthumbupnav">Post Thumb Up</a>
@@ -88,7 +88,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | HTTP Method | URL | Description | Additional Info |
 | --- | --- | --- | --- |
 | POST | /api/v1/post/thumb_up | Add thumb up to post | [show sample request body](#postThumbUpjson) |
-| DELETE | /api/v1/post/thumb_up/{thumbUpId} | Delete post thumb up |  |
+| DELETE | /api/v1/post/thumb_up/{postId} | Delete post thumb up by post ID |  |
 
 #### <a id="commentnav">Comment</a>
 
@@ -99,7 +99,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | GET | /api/v1/comment | Get most recent comments | optional query params: page and size; admin permissions required |
 | GET | /api/v1/comment/post/{postId} | Get most recent comments by post ID | optional query params: page and size |
 | POST | /api/v1/comment | Add new comment | [show sample request body](#commentjson) |
-| PATCH | /api/v1/comment | Update existing comment | [show sample request body](#commentjson) |
+| PUT | /api/v1/comment | Update existing comment | [show sample request body](#commentjson) |
 | DELETE | /api/v1/comment/{commentId} | Delete comment with specific ID |  |
 
 #### <a id="commentthumbupnav">Comment Thumb Up</a>
@@ -107,7 +107,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | HTTP Method | URL | Description | Additional Info |
 | --- | --- | --- | --- |
 | POST | /api/v1/comment/thumb_up | Add thumb up to comment | [show sample request body](#commentThumbUpjson) |
-| DELETE | /api/v1/comment/thumb_up/{thumbUpId} | Delete comment thumb up |  |
+| DELETE | /api/v1/comment/thumb_up/{commentId} | Delete comment thumb up by comment ID|  |
 
 #### <a id="socialgroupnav">Social Group</a>
 
@@ -116,7 +116,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | GET | /api/v1/social_group/{socialGroupId} | Get single social group with specific ID |  |
 | GET | /api/v1/social_group | Get most recent social groups | optional query params: page and size |
 | POST | /api/v1/social_group | Add new social group | [show sample request body](#socialgroupjson) |
-| PATCH | /api/v1/social_group | Update existing social group | [show sample request body](#socialgroupjson) |
+| PUT | /api/v1/social_group | Update existing social group | [show sample request body](#socialgroupjson) |
 | DELETE | /api/v1/social_group/{socialGroupId} | Delete social group with specific ID | admin permissions required |
 
 #### <a id="usernav">User</a>
@@ -126,7 +126,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | GET | /api/v1/user/{userId} | Get single user with specific ID |  |
 | GET | /api/v1/user | Get most recent users | optional query params: page and size |
 | GET | /api/v1/user/socialGroup/{socialGroupId} | Get social group members | optional query params: page and size |
-| PATCH | /api/v1/user/ | Update existing user | [show sample request body](#userjson) |
+| PUT | /api/v1/user/ | Update existing user | [show sample request body](#userjson) |
 | PATCH | /api/v1/user/join_group/{socialGroupId} | Add user to social group |  |
 | PATCH | /api/v1/user/leave_group/{socialGroupId} | Remove user from social group |  |
 | DELETE | /api/v1/user/{userId} | Delete user with specific ID; admin permissions required |  |
@@ -137,7 +137,7 @@ Resources: [Post](#postnav), [Post Thumb Up](#postthumbupnav), [Comment](#commen
 | --- | --- | --- | --- |
 | GET | /api/v1/contact_information/{contactInformationId} | Get single contact information with specific ID |  |
 | POST | /api/v1/contact_information | Add new contact information | [show sample request body](#contactinformationjson) |
-| PATCH | /api/v1/contact_information/{contactInformationId} | Update existing contact information with specific ID | [show sample request body](#contactinformationjson) |
+| PUT | /api/v1/contact_information/{contactInformationId} | Update existing contact information with specific ID | [show sample request body](#contactinformationjson) |
 
 #### <a id="violationreportnav">Violation Report</a>
 

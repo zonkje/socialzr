@@ -10,7 +10,7 @@ public interface CommentService extends CrudService<CommentDTO, Long> {
 
     CommentThumbUpDTO addThumbUpToComment(CommentThumbUpDTO commentThumbUpDTO, String authorName);
 
-    ApplicationResponse deleteCommentThumbUpById(Long thumbUpId, String loggedUserName);
+    ApplicationResponse deleteCommentThumbUpByCommentId(Long commentId, String loggedUserName);
 
     Collection<CommentDTO> findAllPostComments(Long postId, Integer page, Integer size);
 
